@@ -1,0 +1,22 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Grant execute permission
+        run: chmod +x gradlew
+      - name: Clean library code
+        run: ./gradlew clean
+      - name: Spotless Apply
+        run: ./gradlew SpotlessApply
+      - name: Build library code
+        run: ./gradlew build
