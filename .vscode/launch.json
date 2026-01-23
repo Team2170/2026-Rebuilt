@@ -10,6 +10,7 @@
       "name": "WPILib Desktop Debug",
       "request": "launch",
       "desktop": true,
+      "mainClass": "frc.robot.Main",
     },
     {
       "type": "wpilib",
