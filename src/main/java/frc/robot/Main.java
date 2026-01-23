@@ -21,7 +21,5 @@ public final class Main {
    */
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
-    System.out.println("Gooning time");
-    //Yo This is a test I wrote ts on friday
   }
 }
