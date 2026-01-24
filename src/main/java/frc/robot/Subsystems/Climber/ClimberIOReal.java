@@ -40,11 +40,6 @@ public class ClimberIOReal implements ClimberIO {
   }
 
   public void test() {
-    setPercentOut(.8);
-    for (int i = 0; i < 5; i++) {
-    System.out.println(mMotor.getPosition());
-    }
-    setPercentOut(0);
   }
   /**
    * Updates the input state with the current sensor values.

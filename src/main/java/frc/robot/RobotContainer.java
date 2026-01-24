@@ -2,6 +2,7 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.Alert;
@@ -21,14 +22,12 @@ import frc.robot.Subsystems.Vision.Vision;
 
 public class RobotContainer {
         // private final Intake intake;
-        //private final Shooter shooter;
+        private final Shooter shooter;
         private final Climber climber;
         // private final Hopper hopper;
 
         // private final Drive drive;
         // private final Vision limelightExample;
-
-        private final TalonFX motor = new TalonFX(1, "Rio");
 
         private final CommandXboxController driverController = new CommandXboxController(0);
         // private final CommandXboxController operatorController = new
@@ -48,13 +47,13 @@ public class RobotContainer {
         public RobotContainer() {
 climber = new Climber("name", new ClimberIOReal() {
     });
+    shooter= new Shooter();
     configureButtonBindings();
         }
 
     private void configureButtonBindings() {
         //driverController.a().onTrue(new InstantCommand(() -> {climber.changeState();}));
         //driverController.x().onTrue(new InstantCommand(() -> {shooter.changeState();}));
-        driverController.b().onTrue(new InstantCommand(() -> {motor.set(.4);System.out.println("on");})); // x on keyboard -> b on controller
-        driverController.a().onTrue(new InstantCommand(() -> {motor.set(0);System.out.println("zero");}));
+        driverController.b().onTrue(new InstantCommand(() -> {shooter.spin();})); // x on keyboard -> b on controller
     }
 }

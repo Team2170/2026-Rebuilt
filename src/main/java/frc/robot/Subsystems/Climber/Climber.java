@@ -25,7 +25,7 @@ public class Climber extends SubsystemBase {
     if (on) {
         io.setPercentOut(0); on = false;
     }
-    else {io.setPercentOut(.5); on = true;}
+    else {io.setPercentOut(.05); on = true;}
   }
   public void test()  {
     
