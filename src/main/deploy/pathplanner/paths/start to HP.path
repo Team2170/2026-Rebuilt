@@ -1,0 +1,77 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.9078348214285712,
+        "y": 7.180193452380953
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9188378484106983,
+        "y": 6.8221670576989375
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.018764880952381,
+        "y": 3.584754464285714
+      },
+      "prevControl": {
+        "x": 2.123553593961782,
+        "y": 3.8117331540912405
+      },
+      "nextControl": {
+        "x": 1.434964556774946,
+        "y": 2.3202076549557082
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.6484523809523808,
+        "y": 0.6548958333333337
+      },
+      "prevControl": {
+        "x": 0.7490932550650701,
+        "y": 0.9060731290092552
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Human Player"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "avoid tower",
+      "waypointRelativePos": 0.95,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
