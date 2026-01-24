@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6484523809523808,
+        "y": 0.6548958333333337
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.7684055694214419,
+        "y": 0.8742385619023608
+      },
+      "isLocked": false,
+      "linkedName": "Human Player"
+    },
+    {
+      "anchor": {
+        "x": 1.725126488095238,
+        "y": 2.729940476190477
+      },
+      "prevControl": {
+        "x": 1.607579221609852,
+        "y": 2.4635741151377837
+      },
+      "nextControl": {
+        "x": 1.97666511312651,
+        "y": 3.2999361061790973
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.33,
+        "y": 4.0
+      },
+      "prevControl": {
+        "x": 2.17331486000515,
+        "y": 3.572018670407417
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Hub"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

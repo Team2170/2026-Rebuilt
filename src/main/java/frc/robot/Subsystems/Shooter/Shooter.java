@@ -1,19 +1,27 @@
 package frc.robot.Subsystems.Shooter;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
-    ShooterModule module;
+    
+    private TalonFX shooter_motor;
 
-    public Shooter() {
+
+    public Shooter(){
+
+        shooter_motor = new TalonFX(0);
+
 
     }
-    public void changeState() {
-        if (on) {
-            io.setPercentOut(0); on = false;
-        }
-        else {
-            io.setPercentOut(.5); on = true;
-        }
-  }
+
+    public void spin(){
+
+        shooter_motor.set(0.2);
+        System.out.println("Motor spinning ");
+
+    }
+
+
 }
