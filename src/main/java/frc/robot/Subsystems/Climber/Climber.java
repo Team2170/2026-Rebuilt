@@ -27,8 +27,12 @@ public class Climber extends SubsystemBase {
     }
     else {io.setPercentOut(.5); on = true;}
   }
+  public void test()  {
+    
+    ((ClimberIOReal) io).test();
+  }
 
-  /** Stops the climber, setting the output to zero and maintaining position. */
+  /** Stops the climber, setting the otput to zero and maintaining position. */
   public void stop() {
     io.stop();
   }

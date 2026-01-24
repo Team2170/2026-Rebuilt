@@ -1,3 +1,4 @@
+/* 
 package frc.robot.Subsystems.Shooter;
 
 import org.littletonrobotics.junction.Logger;
@@ -19,7 +20,7 @@ public class ShooterModule {
     public ShooterModule(int shooterID, int followerID) {
         shooterId = shooterID;
         followerId = followerID;
-        /* Shooter Motor Config */
+        // Shooter Motor Config 
         mShooterMotor = new TalonFX(shooterId,"cancoder"); // TODO: CONFIGURE TO PHOENIX TUNER NAMES
         mShooterFollower = new TalonFX(followerId); // TODO: CONFIGURE TO PHOENIX TUNER NAMES
         configFlywheelMotor(); // TODO: FIX
@@ -27,9 +28,9 @@ public class ShooterModule {
         relFlywheelEncoderRight = new encoder(mShooterFollower); // TODO: FIX
     }
 
-    /**
-     * Configs Roller Motor
-     */
+    
+     //Configs Roller Motor
+     
     private void configFlywheelMotor() {
         // Set Up Master Motor
     }
@@ -40,7 +41,7 @@ public class ShooterModule {
      * @param isOpenLoop
      *                     Sets the desired state of the module.
      */
-    public void setDesiredState(ShooterState state, boolean isOpenLoop) { // TODO: SHOOTERSTATE
+    /*public void setDesiredState(ShooterState state, boolean isOpenLoop) { // TODO: SHOOTERSTATE
         
     }
 
@@ -51,7 +52,7 @@ public class ShooterModule {
      *                     angle of the pivot) update the speed(velocity) of the
      *                     rollers
      */
-    private void setSpeed(ShooterState desiredState, boolean isOpenLoop) {
+    /*private void setSpeed(ShooterState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
             double percentOutput = desiredState.speed;
             if(percentOutput > 1){
@@ -71,7 +72,7 @@ public class ShooterModule {
     /**
      * @return Shooter given module velocity and angle.
      */
-    public ShooterState getState() {
+    /*public ShooterState getState() {
         return new ShooterState(
                 relFlywheelEncoderLeft.getVelocity());
     }
@@ -79,7 +80,7 @@ public class ShooterModule {
     /**
      * @return Shooter given module averaged shooter flywheels velocity and angle.
      */
-    public ShooterState getSpeed() {
+    /*public ShooterState getSpeed() {
         double avg = (relFlywheelEncoderLeft.getVelocity() + relFlywheelEncoderRight.getVelocity() ) / 2;
         SmartDashboard.putNumber("Shooter/Left Velocity (rpm)", relFlywheelEncoderLeft.getVelocity());
         SmartDashboard.putNumber("Shooter/Right Velocity (rpm)", relFlywheelEncoderRight.getVelocity());
@@ -92,3 +93,4 @@ public class ShooterModule {
         mShooterFollower.stopMotor();
     }
 }
+*/

@@ -24,6 +24,7 @@ public class ClimberIOReal implements ClimberIO {
     mMotor = new TalonFX(Constants.ClimberConstants.climberMotorId);
     configMotor();
     request = new DutyCycleOut(0).withEnableFOC(true);
+    
   }
 
   /** Configures the motor with the provided parameters. */
@@ -38,6 +39,13 @@ public class ClimberIOReal implements ClimberIO {
     mMotor.getConfigurator().apply(internalConfig);
   }
 
+  public void test() {
+    setPercentOut(.8);
+    for (int i = 0; i < 5; i++) {
+    System.out.println(mMotor.getPosition());
+    }
+    setPercentOut(0);
+  }
   /**
    * Updates the input state with the current sensor values.
    *

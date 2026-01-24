@@ -2,6 +2,8 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -10,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Subsystems.Climber.Climber;
 import frc.robot.Subsystems.Climber.ClimberIO;
+import frc.robot.Subsystems.Climber.ClimberIOReal;
 import frc.robot.Subsystems.Drive.Drive;
 import frc.robot.Subsystems.Hopper.Hopper;
 import frc.robot.Subsystems.Intake.Intake;
@@ -18,12 +21,14 @@ import frc.robot.Subsystems.Vision.Vision;
 
 public class RobotContainer {
         // private final Intake intake;
-        private final Shooter shooter;
+        //private final Shooter shooter;
         private final Climber climber;
         // private final Hopper hopper;
 
         // private final Drive drive;
         // private final Vision limelightExample;
+
+        private final TalonFX motor = new TalonFX(1, "Rio");
 
         private final CommandXboxController driverController = new CommandXboxController(0);
         // private final CommandXboxController operatorController = new
@@ -41,13 +46,15 @@ public class RobotContainer {
         // private final LoggedDashboardChooser<Command> autoChooser;
 
         public RobotContainer() {
-climber = new Climber("name", new ClimberIO() {
+climber = new Climber("name", new ClimberIOReal() {
     });
     configureButtonBindings();
         }
 
     private void configureButtonBindings() {
-        driverController.a().onTrue(new InstantCommand(() -> {climber.changeState();}));
-        driverController.x().onTrue(new InstantCommand(() -> {shooter.changeState();}));
+        //driverController.a().onTrue(new InstantCommand(() -> {climber.changeState();}));
+        //driverController.x().onTrue(new InstantCommand(() -> {shooter.changeState();}));
+        driverController.b().onTrue(new InstantCommand(() -> {motor.set(.4);System.out.println("on");})); // x on keyboard -> b on controller
+        driverController.a().onTrue(new InstantCommand(() -> {motor.set(0);System.out.println("zero");}));
     }
 }
