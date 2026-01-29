@@ -6,10 +6,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climber extends SubsystemBase {
     private final ClimberIO io;
     private boolean on;
+    private boolean climbing_state;
+
+    private final static double  climbing_angle = 0;
+    private final static double initial_angle = 0; // TODO: find  these
+    private final static double CLIMBING_SPEED = 0.5;
 
  public Climber(String name, ClimberIO io) {
     this.io = io;
     this.on = false;
+    this.climbing_state = false;  
   }
 
 
@@ -21,15 +27,23 @@ public class Climber extends SubsystemBase {
   public void periodic() { 
   }
 
-  public void changeState() {
+  public void change_movement_state() {
     if (on) {
         io.setPercentOut(0); on = false;
     }
-    else {io.setPercentOut(.05); on = true;}
+    else {
+      io.setPercentOut(CLIMBING_SPEED); on = true;
+    }
   }
-  public void test()  {
-    
-    ((ClimberIOReal) io).test();
+
+  public void change_tilt_state() {
+    if (climbing_state) {
+      io.hold(initial_angle);
+      climbing_state = false;
+    } else {
+      io.hold(climbing_angle);
+      climbing_state = true;
+    }
   }
 
   /** Stops the climber, setting the otput to zero and maintaining position. */
