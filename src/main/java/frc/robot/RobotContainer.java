@@ -52,8 +52,14 @@ climber = new Climber("name", new ClimberIOReal() {
         }
 
     private void configureButtonBindings() {
-        //driverController.a().onTrue(new InstantCommand(() -> {climber.changeState();}));
-        //driverController.x().onTrue(new InstantCommand(() -> {shooter.changeState();}));
+// right trig shoot
+            // left trig intake
+            // rb climb up
+            // lb climb down
+            //joysticks are to move
+            // bottom button on xbox - start deploying
+            //a - start deploying intake
+            // b- bring up intake
         driverController.b().onTrue(new InstantCommand(() -> {shooter.spin();})); // x on keyboard -> b on controller
     }
 }
