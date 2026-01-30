@@ -1,13 +1,19 @@
-package frc.robot.Constants;
+package frc.robot.constants;
 
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class Constants {
     public static final Mode robotMode = RobotBase.isReal() ? Mode.REAL : Mode.SIM;
+    public static final boolean tuningMode = false;
 
     public enum Mode {
         REAL,
-        SIM,
-        // REPLAY (Honestly this is a maybe)
+        SIM
+    }
+
+    public static boolean disableHAL = false;
+
+    public static void disableHAL() {
+        disableHAL = true;
     }
 }

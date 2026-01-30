@@ -1,6 +1,6 @@
 package frc.robot;
 
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,9 +11,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Constants;
-import frc.robot.Subsystems.Drive.Drive;
-import frc.robot.Subsystems.Drive.GyroIOPigeon2;
+import frc.robot.constants.Constants;
 
 public class RobotContainer {
   // private final Intake intake;
@@ -21,7 +19,7 @@ public class RobotContainer {
   // private final Climber climber;
   // private final Hopper hopper;
 
-  private final Drive drive;
+  // private final Drive drive;
   // private final Vision limelightExample;
 
   private final XboxController driverController = new XboxController(0);
@@ -35,16 +33,10 @@ public class RobotContainer {
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private SwerveDriveSimulation driveSimulation;
-
   public RobotContainer() {
     switch (Constants.robotMode) {
       case REAL:
-        drive = new Drive(
-          new GyroIOPigeon2(),
-          new M
-        );
-        
+        // Not implemented
         break;
 
       case SIM:
