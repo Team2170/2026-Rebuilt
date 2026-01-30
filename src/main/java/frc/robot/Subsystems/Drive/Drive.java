@@ -19,7 +19,7 @@ import frc.robot.util.swerve.SwerveSetpoint;
 import frc.robot.util.swerve.SwerveSetpointGenerator;
 
 public class Drive extends SubsystemBase {
-        private static final Lock odometryLock = new ReentrantLock();
+        public static final Lock odometryLock = new ReentrantLock();
         private final GyroIO gyroIO;
         private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
         private final Module[] modules = new Module[4]; // FL, FR, BL, BR

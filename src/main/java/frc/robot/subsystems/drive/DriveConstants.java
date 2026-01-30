@@ -7,14 +7,28 @@
 
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import lombok.Builder;
 
 public class DriveConstants {
-    //TODO In meters
+    public static final double odometryFrequency = 250;
+
+    // TODO In meters
     public static final Translation2d[] moduleTranslations = {
-        new Translation2d(),
-        new Translation2d(),
-        new Translation2d(),
-        new Translation2d()
-    };  
+            new Translation2d(),
+            new Translation2d(),
+            new Translation2d(),
+            new Translation2d()
+    };
+
+    @Builder
+    public record ModuleConfig(
+            int driveMotorId,
+            int turnMotorId,
+            int encoderChannel,
+            Rotation2d encoderOffset,
+            boolean turnInverted,
+            boolean encoderInverted) {
+    }
 }
