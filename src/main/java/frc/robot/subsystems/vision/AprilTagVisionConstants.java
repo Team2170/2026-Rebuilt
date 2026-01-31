@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc.robot.Subsystems.Vision;
+package frc.robot.subsystems.vision;
 
 public class AprilTagVisionConstants {
 

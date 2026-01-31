@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Vision;
+package frc.robot.subsystems.vision;
 
 public enum LEDMode {
   FORCEBLINK,

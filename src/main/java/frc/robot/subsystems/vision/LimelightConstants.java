@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Vision;
+package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
