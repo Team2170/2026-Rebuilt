@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Climber;
+package frc.robot.subsystems.Climber;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -8,7 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants.Constants;
+import frc.robot.constants.Constants;
 
 /**
  * Implementation of ClimberIO for real hardware, using a TalonFX motor

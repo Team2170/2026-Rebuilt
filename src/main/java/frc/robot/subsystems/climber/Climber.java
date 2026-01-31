@@ -1,9 +1,9 @@
-package frc.robot.Subsystems.Climber;
+package frc.robot.subsystems.Climber;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Constants;
+import frc.robot.constants.Constants;
 
 public class Climber extends SubsystemBase {
   private final ClimberIO io;
@@ -11,7 +11,7 @@ public class Climber extends SubsystemBase {
   private boolean climbing_up;
   private int tilt_state;
 
-  public Climber(String name, ClimberIO io) {
+  public Climber(ClimberIO io) {
     this.io = io;
     this.climbing_down = false;
     this.climbing_up = false;
