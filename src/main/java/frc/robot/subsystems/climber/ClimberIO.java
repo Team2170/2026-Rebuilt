@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Climber;
+package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.signals.ControlModeValue;
 
