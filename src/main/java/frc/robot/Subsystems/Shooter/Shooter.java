@@ -16,7 +16,7 @@ public class Shooter extends SubsystemBase {
 
     public Shooter(){
 
-        shooter_motor = new TalonFX(Constants.ClimberConstants.climberMotorId, "rio"); // TODO: FIND SHOOTER ID
+        shooter_motor = new TalonFX(Constants.ClimberConstants.climberMotor1Id, "rio"); // TODO: FIND SHOOTER ID
         spinning = false;
 
     }

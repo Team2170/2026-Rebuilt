@@ -1,6 +1,9 @@
 package frc.robot.Subsystems.Climber;
 
 import com.ctre.phoenix6.signals.ControlModeValue;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import org.littletonrobotics.junction.AutoLog;
 
 /** Interface for the Climber subsystem's input/output operations. */
@@ -36,7 +39,8 @@ public interface ClimberIO {
    *
    * @param rot The target position in rotations.
    */
-  public default void hold(double rot) {}
+  public default void hold_hooks(double rot) {}
+
 
   /** Stops the climber motor. */
   public default void stop() {}
