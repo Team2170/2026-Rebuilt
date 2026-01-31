@@ -1,20 +1,20 @@
 package frc.robot.subsystems.drive;
 
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.DriveConstants;
 import frc.robot.util.swerve.SwerveSetpoint;
 import frc.robot.util.swerve.SwerveSetpointGenerator;
 
@@ -24,7 +24,8 @@ public class Drive extends SubsystemBase {
         private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
         private final Module[] modules = new Module[4]; // FL, FR, BL, BR
         private final Debouncer gyroConnectedDebouncer = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-        private final Alert gyroDisconnectedAlert = new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
+        private final Alert gyroDisconnectedAlert = new Alert("Disconnected gyro, using kinematics as fallback.",
+                        AlertType.kError);
 
         private final Timer lastMovementTimer = new Timer();
 
@@ -43,7 +44,7 @@ public class Drive extends SubsystemBase {
                                         new SwerveModuleState(),
                                         new SwerveModuleState()
                         });
-                        
+
         private final SwerveSetpointGenerator swerveSetpointGenerator;
 
         public Drive(
@@ -64,5 +65,15 @@ public class Drive extends SubsystemBase {
 
                 // Start odometry thread
                 PhoenixOdometryThread.getInstance().start();
+        }
+
+        /**
+         * Set brake mode to {@code enabled} doesn't change brake mode if already set.
+         */
+        private void setBrakeMode(boolean enabled) {
+                if (brakeModeEnabled != enabled) {
+                        Arrays.stream(modules).forEach(module -> module.setBrakeMode(enabled));
+                }
+                brakeModeEnabled = enabled;
         }
 }

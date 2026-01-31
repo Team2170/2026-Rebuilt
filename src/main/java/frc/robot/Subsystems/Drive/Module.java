@@ -17,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
@@ -31,12 +32,12 @@ public class Module {
     private static final LoggedTunableNumber turnkD = new LoggedTunableNumber("Drive/Module/TurnkD");
 
     static {
-        switch (Constants.getRobot()) {
-            case COMPBOT, DEVBOT -> {
+        switch (Constants.robotMode) {
+            case REAL -> {
                 drivekS.initDefault(5.0);
                 drivekV.initDefault(0);
                 // Multiplied by desired wheelTorqueNm
-                drivekT.initDefault(ModuleIOComp.driveReduction / DCMotor.getKrakenX60Foc(1).KtNMPerAmp);
+                drivekT.initDefault(ModuleIOTalonFX.driveReduction / DCMotor.getKrakenX60Foc(1).KtNMPerAmp);
                 drivekP.initDefault(35.0);
                 drivekD.initDefault(0);
                 turnkP.initDefault(4000.0);
@@ -117,9 +118,6 @@ public class Module {
         turnEncoderDisconnectedAlert.set(
                 !turnEncoderConnectedDebouncer.calculate(inputs.data.turnEncoderConnected())
                         && !Robot.isJITing());
-
-        // Record cycle time
-        LoggedTracer.record("Drive/Module" + index);
     }
 
     /** Runs the module with the specified setpoint state. */

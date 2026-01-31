@@ -1,5 +1,6 @@
 package frc.robot;
 
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -12,6 +13,11 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DriveConstants;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 
 public class RobotContainer {
   // private final Intake intake;
@@ -19,7 +25,7 @@ public class RobotContainer {
   // private final Climber climber;
   // private final Hopper hopper;
 
-  // private final Drive drive;
+  private final Drive drive;
   // private final Vision limelightExample;
 
   private final XboxController driverController = new XboxController(0);
@@ -33,14 +39,27 @@ public class RobotContainer {
 
   private final LoggedDashboardChooser<Command> autoChooser;
 
+  private SwerveDriveSimulation driveSimulation;
+
   public RobotContainer() {
     switch (Constants.robotMode) {
       case REAL:
-        // Not implemented
+        // drive = new Drive(
+        //   new GyroIOPigeon2(),
+        //   new ModuleIOTalonFX(),
+        //   new ModuleIOTalonFX(),
+        //   new ModuleIOTalonFX(),
+        //   new ModuleIOTalonFX()
+        //   );
         break;
-
       case SIM:
-        // Not implemented
+        drive = new Drive(
+          new GyroIO() {},
+          new ModuleIOSim(),
+          new ModuleIOSim(),
+          new ModuleIOSim(),
+          new ModuleIOSim()
+        );
         break;
     }
 
@@ -74,7 +93,7 @@ public class RobotContainer {
     }
 
     SimulatedArena.getInstance().simulationPeriodic();
-    
+
     Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
     Logger.recordOutput(
         "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));

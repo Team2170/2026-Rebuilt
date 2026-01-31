@@ -5,53 +5,76 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
+ * The methods in this class are called automatically corresponding to each
+ * mode, as described in
+ * the TimedRobot documentation. If you change the name of this class or the
+ * package after creating
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
   private RobotContainer robotContainer;
 
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and should be used
+   * for any
    * initialization code.
    */
   public Robot() {
-    robotContainer = new RobotContainer(); 
+    robotContainer = new RobotContainer();
+  }
+
+  /**
+   * Returns whether we should wait to enable because JIT optimizations are in
+   * progress.
+   */
+  public static boolean isJITing() {
+    return Timer.getTimestamp() < 45.0;
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+  }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }
