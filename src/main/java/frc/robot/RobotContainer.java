@@ -33,16 +33,8 @@ public class RobotContainer {
     private final OverrideSwitches overrides = new OverrideSwitches(2); // TODO Determine port
 
     private final Alert driverDisconnected = new Alert("Driver controller disconnected.", AlertType.kWarning);
-    private final Alert operatorDisconnected = new Alert("Operator controller disconnected.",
-            AlertType.kWarning);
-
+    private final Alert operatorDisconnected = new Alert("Operator controller disconnected.", AlertType.kWarning);
     private final Alert overrideDisconnected = new Alert("Override controller disconnected.", AlertType.kInfo);
-    private final Alert deadInTheWaterAlert = new Alert("Please select an auto routine!!! 😳", AlertType.kWarning);
-
-    private final Alert primaryDisconnected = new Alert("Primary controller disconnected.",
-            AlertType.kWarning);
-    private final Alert secondaryDisconnected = new Alert("Secondary controller disconnected.",
-            AlertType.kWarning);
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
