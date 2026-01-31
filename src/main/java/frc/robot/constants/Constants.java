@@ -17,4 +17,29 @@ public class Constants {
     public static void disableHAL() {
         disableHAL = true;
     }
+
+
+
+    public static final class ShooterConstants{
+
+
+        public static final int shooterID = 0;//*** CHANGE THESE, JUST AN EXAMPLE */
+        public static final int followerID = 0;//*** CHANGE THESE, JUST AN EXAMPLE */
+
+        public static final class FieldConstants{
+
+            private static final double hubHeight = 49.5; //inches
+
+
+        }
+
+        
+
+
+
+
+
+    }
+
+
 }
