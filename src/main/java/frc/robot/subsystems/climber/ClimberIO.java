@@ -46,6 +46,7 @@ public interface ClimberIO {
    *
    * @param rot The target position in rotations.
    */
-  public default void hold(double rot) {}
+  public default void hold_hooks(double rot) {}
+
 
 }
