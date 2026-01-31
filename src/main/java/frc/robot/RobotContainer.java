@@ -19,6 +19,7 @@ import frc.robot.Subsystems.Hopper.Hopper;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Vision.Vision;
+import frc.robot.Constants.*;
 
 public class RobotContainer {
     // private final Intake intake;
@@ -45,7 +46,8 @@ public class RobotContainer {
     // private final LoggedDashboardChooser<Command> autoChooser;
 
     public RobotContainer() {
-        climber = new Climber("name", new ClimberIOReal() {});
+        climber = new Climber("name", new ClimberIOReal() {
+        });
         configureButtonBindings();
     }
 
@@ -58,7 +60,7 @@ public class RobotContainer {
             // bottom button on xbox - start deploying
             //a - start deploying intake
             // b- bring up intake
-        driverController.leftBumper().onTrue(new InstantCommand(() -> {climber.change_movement_state(Climber.CLIMB_DOWN)})); // x on keyboard -> b on controller
-        driverController.rightBumper().onTrue(new InstantCommand(() -> {climber.change_movement_state(Climber.CLIMB_UP)}));
+        driverController.leftBumper().onTrue(new InstantCommand(() -> {climber.change_climb_state(Climber.CLIMB_DOWN);})); // x on keyboard -> b on controller
+        driverController.rightBumper().onTrue(new InstantCommand(() -> {climber.change_climb_state(Climber.CLIMB_UP);}));
     }
 }

@@ -14,24 +14,11 @@ public class Shooter extends SubsystemBase {
 
     private final static double SPEED = 0.5;
 
-    public Shooter(){
+    public Shooter(){}
 
-        shooter_motor = new TalonFX(Constants.ClimberConstants.climberMotorId, "rio"); // TODO: FIND SHOOTER ID
-        spinning = false;
+    private void configMotors() {}
 
-    }
-
-    private void configMotors() {
-        
-    }
-
-    public void spin(){
-
-        DutyCycleOut request = new DutyCycleOut(spinning ? 0 : SPEED);
-        shooter_motor.setControl(request.withOutput(spinning ? 0 : SPEED));
-        spinning = spinning ? false : true;
-
-    }
+    public void spin(){}
 
 
     

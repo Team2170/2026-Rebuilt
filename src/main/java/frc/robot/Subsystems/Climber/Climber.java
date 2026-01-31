@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Climber;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Constants;
 
 public class Climber extends SubsystemBase {
   private final ClimberIO io;
@@ -10,21 +11,11 @@ public class Climber extends SubsystemBase {
   private boolean climbing_up;
   private int tilt_state;
 
-  private final static Rotation2d CLIMBING_ANGLE = new Rotation2d(0);
-  private final static Rotation2d INITIAL_ANGLE = new Rotation2d(0); // TODO: find these
-  private final static double CLIMBING_UP_SPEED = 0.5;
-  private final static double CLIMBING_DOWN_SPEED = -0.5;
-
-  public final static int CLIMB_UP = 0;
-  public final static int CLIMB_DOWN = 1;
-  public final static int INITIAL_TILT_STATE = 0;
-  public final static int CLIMB_TILT_STATE = 1;
-
   public Climber(String name, ClimberIO io) {
     this.io = io;
     this.climbing_down = false;
     this.climbing_up = false;
-    this.tilt_state = INITIAL_TILT_STATE;
+    this.tilt_state = Constants.ClimberConstants.INITIAL_TILT_STATE;
   }
 
   /**
@@ -46,28 +37,28 @@ public class Climber extends SubsystemBase {
    * @param state desired climb state
    */
   public void change_climb_state(int state) {
-    if (state == CLIMB_UP) {
+    if (state == Constants.ClimberConstants.CLIMBING_UP_SPEED) {
       if (climbing_up) {
         io.set_climb_percent_out(0);
         climbing_up = false;
       } else if (climbing_down) {
-        io.set_climb_percent_out(CLIMBING_UP_SPEED);
+        io.set_climb_percent_out(Constants.ClimberConstants.CLIMBING_UP_SPEED);
         climbing_down = false;
         climbing_up = true;
       } else {
-        io.set_climb_percent_out(CLIMBING_UP_SPEED);
+        io.set_climb_percent_out(Constants.ClimberConstants.CLIMBING_UP_SPEED);
         climbing_up = true;
       }
-    } else if (state == CLIMB_DOWN) {
+    } else if (state == Constants.ClimberConstants.CLIMBING_DOWN_SPEED) {
       if (climbing_down) {
         io.set_climb_percent_out(0);
         climbing_down = false;
       } else if (climbing_up) {
-        io.set_climb_percent_out(CLIMBING_DOWN_SPEED);
+        io.set_climb_percent_out(Constants.ClimberConstants.CLIMBING_DOWN_SPEED);
         climbing_down = true;
         climbing_up = false;
       } else {
-        io.set_climb_percent_out(CLIMBING_DOWN_SPEED);
+        io.set_climb_percent_out(Constants.ClimberConstants.CLIMBING_DOWN_SPEED);
         climbing_down = true;
       }
     }
@@ -80,15 +71,16 @@ public class Climber extends SubsystemBase {
    * @param state desired tilt state
    */
   public void change_tilt_state(int state) {
-    if (state == INITIAL_TILT_STATE) {
-      if (tilt_state == CLIMB_TILT_STATE) {
-        io.set_tilt_state(INITIAL_ANGLE);
-        tilt_state = INITIAL_TILT_STATE;
+    if (state == Constants.ClimberConstants.INITIAL_TILT_STATE) {
+      if (tilt_state == Constants.ClimberConstants.CLIMB_TILT_STATE) {
+        io.set_tilt_state(Constants.ClimberConstants.INITIAL_ANGLE);
+        tilt_state = Constants.ClimberConstants.INITIAL_TILT_STATE;
       }
-    } else if (state == CLIMB_TILT_STATE) {
-      if (tilt_state == INITIAL_TILT_STATE) {
-        io.set_tilt_state(CLIMBING_ANGLE);
-        tilt_state = CLIMB_TILT_STATE;
+    } else if (state == Constants.ClimberConstants.CLIMB_TILT_STATE) {
+      if (tilt_state == Constants.ClimberConstants.INITIAL_TILT_STATE) {
+     
+       io.set_tilt_state(Constants.ClimberConstants.CLIMBING_ANGLE);
+        tilt_state = Constants.ClimberConstants.CLIMB_TILT_STATE;
       }
     }
   }

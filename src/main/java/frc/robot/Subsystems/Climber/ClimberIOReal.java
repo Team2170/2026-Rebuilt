@@ -18,20 +18,8 @@ public class ClimberIOReal implements ClimberIO {
   private TalonFX climbing_motor;
   private TalonFX tilting_motor;
 
-  private final static Rotation2d CLIMBING_TILT_STATE = new Rotation2d(0); // TODO: FIGURE OUT
-  private final static Rotation2d INITIAL_TILT_STATE = new Rotation2d(0); // TODO: FIGURE OUT
-  private final static Rotation2d INITIAL_HOOK_STATE = new Rotation2d(0); // TODO: FIGURE OUT
-  private final static Rotation2d L1_HOOK_STATE = new Rotation2d(0);
-  private final static Rotation2d L2_HOOK_STATE = new Rotation2d(0);
-  private final static Rotation2d L3_HOOK_STATE = new Rotation2d(0);
-
-  private final static int tiltId = 1; // TODO: USE CONSTANTS CLASS
-  private final static int climbId = 2;
-
-  private static final double GEAR_RATIO = 125.00;
   private DutyCycleOut request;
   private PositionDutyCycle holdPosRequest;
-  private final static double TILTING_SPEED = 0.3;
 
   /**
    * Constructs a ClimberIOReal instance with the given configuration.
@@ -40,12 +28,12 @@ public class ClimberIOReal implements ClimberIO {
    *            parameters.
    */
   public ClimberIOReal() {
-    climbing_motor = new TalonFX(climbId); // USE CONSTANTS CLASS LATER
-    tilting_motor = new TalonFX(tiltId); // USE CONSTANTS CLASS LATER
+    climbing_motor = new TalonFX(Constants.ClimberConstants.CLIMB_MOTOR_ID); // USE CONSTANTS CLASS LATER
+    tilting_motor = new TalonFX(Constants.ClimberConstants.TILT_MOTOR_ID); // USE CONSTANTS CLASS LATER
     configMotor();
     request = new DutyCycleOut(0).withEnableFOC(true);
     holdPosRequest = new PositionDutyCycle(0);
-    holdPosRequest.Velocity = TILTING_SPEED; // TODO: change later
+    holdPosRequest.Velocity = Constants.ClimberConstants.TILTING_SPEED; // TODO: change later
   }
 
   /** Configures the motor with the provided parameters. */
@@ -54,7 +42,7 @@ public class ClimberIOReal implements ClimberIO {
 
     internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
     internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-    internalConfig.Feedback.withSensorToMechanismRatio(GEAR_RATIO);
+    internalConfig.Feedback.withSensorToMechanismRatio(Constants.ClimberConstants.GEAR_RATIO);
     internalConfig.CurrentLimits.withStatorCurrentLimit(120);
     internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
     // Apply all settings.
