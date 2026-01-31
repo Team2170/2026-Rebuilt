@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Climber;
+package frc.robot.subsystems.climber;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
@@ -83,5 +83,9 @@ public class Climber extends SubsystemBase {
         tilt_state = Constants.ClimberConstants.CLIMB_TILT_STATE;
       }
     }
+  }
+
+  public void climb_to(Rotation2d rot) {
+    
   }
 }

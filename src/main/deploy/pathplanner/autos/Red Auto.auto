@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "start to HP"
+            "pathName": "Red start to HP"
           }
         },
         {
@@ -19,25 +19,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HP to hub"
+            "pathName": "Red HP to hub"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 5.0
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "hub to climb"
+            "pathName": "Red hub to climb"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 7.0
+            "name": "climb_L1"
           }
         }
       ]

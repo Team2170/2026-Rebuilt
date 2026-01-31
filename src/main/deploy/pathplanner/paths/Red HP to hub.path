@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.33,
-        "y": 4.0
+        "x": 16.0,
+        "y": 7.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6618772022486272,
-        "y": 4.074787385734212
+        "x": 16.244284157730718,
+        "y": 7.453153083464586
       },
       "isLocked": false,
-      "linkedName": "Hub"
+      "linkedName": "red hp"
     },
     {
       "anchor": {
-        "x": 1.5880952380952378,
-        "y": 3.754412202380953
+        "x": 13.8,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 1.3474490042054936,
-        "y": 3.686667164815958
+        "x": 13.55,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Climb"
+      "linkedName": "red hub"
     }
   ],
   "rotationTargets": [],
