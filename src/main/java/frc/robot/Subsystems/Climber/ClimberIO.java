@@ -1,6 +1,9 @@
 package frc.robot.Subsystems.Climber;
 
 import com.ctre.phoenix6.signals.ControlModeValue;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import org.littletonrobotics.junction.AutoLog;
 
 /** Interface for the Climber subsystem's input/output operations. */
@@ -10,11 +13,16 @@ public interface ClimberIO {
   @AutoLog
   public static class ClimberIOInputs {
     // LEFT INPUTS
-    public double TorqueCurrentAmps = -1;
-    public double VelocityRotPerSec = -1;
-    public boolean MotorConnected = false;
-    public ControlModeValue ControlMode = ControlModeValue.DisabledOutput;
-    public double PositionError = -1;
+    public double ClimberTorqueCurrentAmps = -1;
+    public double ClimberVelocityRotPerSec = -1;
+    public boolean ClimberMotorConnected = false;
+    public ControlModeValue ClimberControlMode = ControlModeValue.DisabledOutput;
+    public double ClimberPositionError = -1;
+    public double TilterTorqueCurrentAmps = -1;
+    public double TilterVelocityRotPerSec = -1;
+    public boolean TilterMotorConnected = false;
+    public ControlModeValue TilterControlMode = ControlModeValue.DisabledOutput;
+    public double TilterPositionError = -1;
   }
 
   /**
@@ -29,7 +37,9 @@ public interface ClimberIO {
    *
    * @param percent The percentage output to set the climber motor (-1.0 to 1.0).
    */
-  public default void setPercentOut(double percent) {System.out.println("Percent set to " + percent);}
+  public default void set_climb_percent_out(double percent) {System.out.println("Percent set to " + percent);}
+
+  public void set_tilt_state(Rotation2d rot);
 
   /**
    * Holds the climber at a specified position.
@@ -38,6 +48,4 @@ public interface ClimberIO {
    */
   public default void hold(double rot) {}
 
-  /** Stops the climber motor. */
-  public default void stop() {}
 }
