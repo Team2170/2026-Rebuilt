@@ -30,23 +30,32 @@ public interface ClimberIO {
    *
    * @param inputs The ClimberIOInputs object to be updated.
    */
-  public default void updateInputs(ClimberIOInputs inputs) {}
+  public default void updateInputs(ClimberIOInputs inputs) {
+  }
 
   /**
    * Sets the climber motor output as a percentage of total power.
    *
    * @param percent The percentage output to set the climber motor (-1.0 to 1.0).
    */
-  public default void set_climb_percent_out(double percent) {System.out.println("Percent set to " + percent);}
+  public default void set_climb_percent_out(double percent) {
+    System.out.println("Percent set to " + percent);
+  }
+
+  /**
+   * sets the motors position to a given rotation
+   * @param rot desired rotation position of the motor
+   */
+  public void set_climbing_state(Rotation2d rot)
 
   public void set_tilt_state(Rotation2d rot);
 
+  
   /**
    * Holds the climber at a specified position.
    *
    * @param rot The target position in rotations.
    */
-  public default void hold_hooks(double rot) {}
-
+  public default void hold(double rot) {}
 
 }

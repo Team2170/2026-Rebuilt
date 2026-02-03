@@ -68,6 +68,7 @@ public class Climber extends SubsystemBase {
    * changes the tilt state of the climber to prepare for climb. possible states
    * are <code>Climber.INITIAL_TILT_STATE</code> and
    * <code>Climber.CLIMB_TILT_STATE</code>
+   * 
    * @param state desired tilt state
    */
   public void change_tilt_state(int state) {
@@ -78,14 +79,24 @@ public class Climber extends SubsystemBase {
       }
     } else if (state == Constants.ClimberConstants.CLIMB_TILT_STATE) {
       if (tilt_state == Constants.ClimberConstants.INITIAL_TILT_STATE) {
-     
-       io.set_tilt_state(Constants.ClimberConstants.CLIMBING_ANGLE);
+
+        io.set_tilt_state(Constants.ClimberConstants.CLIMBING_ANGLE);
         tilt_state = Constants.ClimberConstants.CLIMB_TILT_STATE;
       }
     }
   }
 
-  public void climb_to(Rotation2d rot) {
-    
+  /**
+   * resets the climbing motors back to their initial positions to prepare for another climb
+   */
+  public void reset() {
+    io.set_climbing_state(Constants.ClimberConstants.TOWER_L0);
+  }
+
+  /**
+   * moves the climbing motors until it is at l1
+   */
+  public void climb_L1() {
+    io.set_climbing_state(Constants.ClimberConstants.TOWER_L1);
   }
 }
