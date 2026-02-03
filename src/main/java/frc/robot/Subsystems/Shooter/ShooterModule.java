@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Shooter;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -19,11 +20,10 @@ import frc.robot.subsystems.Shooter.ShooterState;
 public class ShooterModule {
 
     
-    private int shooterId;
-    private int followerId;
+    
 
-    private TalonFX mShooterMotor;
-    private TalonFX mShooterFollower;
+    private TalonFX shooterMotor;
+    private TalonFX shooterFollower;
 
 
     private static final double kP = 0;
@@ -35,13 +35,14 @@ public class ShooterModule {
     private static final double MAX_RPM =  0;
     private static final double RPM_TOLERANCE = 0;
 
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
+
 
     public ShooterModule(int shooterID, int followerID, CANBus canbus) {
-        this.shooterId = shooterID;
-        this.followerId = followerID;
+       
         
-        mShooterMotor = new TalonFX(shooterID, canbus);
-        mShooterFollower = new TalonFX(followerID, canbus);
+        shooterMotor = new TalonFX(shooterID, canbus);
+        shooterFollower = new TalonFX(followerID, canbus);
 
 
         configFlywheelMotor();
@@ -58,13 +59,8 @@ public class ShooterModule {
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
 
-        mShooterMotor.getConfigurator().apply(config);
-        mShooterFollower.getConfigurator().apply(config);
-
-   
-        mShooterFollower.setControl(new Follower(shooterId, null));
-
-       
+        shooterMotor.getConfigurator().apply(config);
+        shooterFollower.getConfigurator().apply(config);
 
         
     }
@@ -74,39 +70,44 @@ public class ShooterModule {
 
     public void stopRollers() {
 
-        mShooterMotor.stopMotor();
-        mShooterFollower.stopMotor();
+        shooterMotor.stopMotor();
+        shooterFollower.stopMotor();
 
+    }
+
+
+
+    
+    public void stop() {
+        shooterMotor.stopMotor();
+    }
+
+    public void setRevolutionsPerMinute(double rpm) {
+        rpm = Math.min(rpm, MAX_RPM);
+        shooterMotor.setControl(
+            velocityRequest.withVelocity(revolutionsPerMinuteToRevolutionsPerSecond(rpm))
+        );
     }
 
     
 
+    public double getRevolutionsPerMinute() {
+        
+        double revolutionsPerSecond = shooterMotor.getVelocity().getValueAsDouble();
 
-    public void setRPM(double rpm) {
-
-        rpm = Math.min(rpm, MAX_RPM);
-
-        mShooterMotor.setControl(velocityRequest.withVelocity(rpmToRotationsPerSecond(rpm)));
-
-
-
+        double revolutionsPerMinute = revolutionsPerSecond * 60.0;
+        SmartDashboard.putNumber("Shooter RPM", revolutionsPerMinute);
+        return revolutionsPerMinute;
     }
 
-    public ShooterState getSpeed() {
-        double avg = (relFlywheelEncoderLeft.getVelocity() + relFlywheelEncoderRight.getVelocity() ) / 2;
-        SmartDashboard.putNumber("Shooter/Left Velocity (rpm)", relFlywheelEncoderLeft.getVelocity());
-        SmartDashboard.putNumber("Shooter/Right Velocity (rpm)", relFlywheelEncoderRight.getVelocity());
+    public boolean atSetPoint(double targetRPM) {
+        return Math.abs(getRevolutionsPerMinute() - targetRPM) <= RPM_TOLERANCE;
+    }
 
+    
 
-        
-
-        
-
-        
-
-        
-        
-        return new ShooterState(avg);
+    private double revolutionsPerMinuteToRevolutionsPerSecond(double rpm) {
+        return rpm / 60.0;
     }
 
 
