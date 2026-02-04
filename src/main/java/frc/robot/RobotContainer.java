@@ -1,9 +1,13 @@
 package frc.robot;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,6 +19,7 @@ import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.OverrideSwitches;
@@ -38,6 +43,8 @@ public class RobotContainer {
 
     // private final LoggedDashboardChooser<Command> autoChooser; //TODO
 
+    private SwerveDriveSimulation driveSimulation;
+
     public RobotContainer() {
         switch (Constants.robotMode) {
             case REAL:
@@ -48,8 +55,12 @@ public class RobotContainer {
                         new ModuleIOTalonFX(DriveConstants.moduleConfigs[3]));
                 break;
             default:
+                driveSimulation = new SwerveDriveSimulation(DriveConstants.mapleSimConfig,
+                        new Pose2d(3, 3, new Rotation2d()));
+                SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation); 
+
                 drive = new Drive(
-                        new GyroIO() {},
+                        new GyroIOSim(driveSimulation.getGyroSimulation()),
                         new ModuleIOSim(),
                         new ModuleIOSim(),
                         new ModuleIOSim(),
@@ -57,8 +68,9 @@ public class RobotContainer {
                 break;
         }
 
-        // autoChooser = new LoggedDashboardChooser<>("Auto Routines", AutoBuilder.buildAutoChooser(drive));
-        
+        // autoChooser = new LoggedDashboardChooser<>("Auto Routines",
+        // AutoBuilder.buildAutoChooser(drive));
+
         // TODO add sysId routines
 
         configureButtonBindings();
@@ -70,7 +82,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return autoChooser.get();
-        return null; //TODO
+        return null; // TODO
     }
 
     // Update dashboard data
