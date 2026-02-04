@@ -192,7 +192,7 @@ public class Robot extends LoggedRobot {
               && !canInitialErrorTimer.hasElapsed(canErrorTimeThreshold));
     }
 
-    //TODO Maybe add NTCLientLogger in case many people are connected to robot????
+    // TODO Maybe add NTCLientLogger in case many people are connected to robot????
 
     // Low battery alert
     lowBatteryCycleCount += 1;
@@ -222,6 +222,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+    autonomousCommand = robotContainer.getAutonomousCommand();
+    if (autonomousCommand != null)
+      CommandScheduler.getInstance().schedule(autonomousCommand);
   }
 
   @Override
@@ -230,6 +233,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    if (autonomousCommand != null)
+      autonomousCommand.cancel();
   }
 
   @Override

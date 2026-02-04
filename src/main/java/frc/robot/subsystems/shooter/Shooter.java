@@ -1,27 +1,24 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class Shooter extends SubsystemBase {
-    
-    private TalonFX shooter_motor;
-
-
     public Shooter(){
+    }
 
-        shooter_motor = new TalonFX(0);
-
-
+    private void configMotors() {
+        
     }
 
     public void spin(){
-
-        shooter_motor.set(0.2);
-        System.out.println("Motor spinning ");
-
     }
+
+
+    
 
 
 }
