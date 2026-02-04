@@ -65,7 +65,7 @@ public class RobotContainer {
     private final Alert operatorDisconnected = new Alert("Operator controller disconnected.", AlertType.kWarning);
     private final Alert overrideDisconnected = new Alert("Override controller disconnected.", AlertType.kInfo);
 
-    private final LoggedDashboardChooser<Command> autoChooser;
+    // private final LoggedDashboardChooser<Command> autoChooser; //TODO
 
     public RobotContainer() {
         switch (Constants.robotMode) {
@@ -79,8 +79,7 @@ public class RobotContainer {
                 break;
             default:
                 drive = new Drive(
-                        new GyroIO() {
-                        },
+                        new GyroIO() {},
                         new ModuleIOSim(),
                         new ModuleIOSim(),
                         new ModuleIOSim(),
@@ -110,7 +109,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        // return autoChooser.get();
+        return null; //TODO
     }
 
     // Update dashboard data

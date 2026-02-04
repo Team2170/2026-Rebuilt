@@ -18,9 +18,9 @@ public class DriveConstants {
     public static final double odometryFrequency = 250;
 
     // TODO In meters
-    public static final double trackWidthX = 0;
-    public static final double trackWidthY = 0;
-    public static final double wheelRadius = 0;
+    public static final double trackWidthX = Units.inchesToMeters(22.5);
+    public static final double trackWidthY = Units.inchesToMeters(22.5);
+    public static final double wheelRadius = Units.inchesToMeters(2);
     public static final double driveBaseRadius = Math.hypot(trackWidthX / 2, trackWidthY / 2);
 
     public static final LoggedTunableNumber maxLinearSpeed = new LoggedTunableNumber("Drive Max Linear Speed",
@@ -34,10 +34,10 @@ public class DriveConstants {
 
     // TODO In meters
     public static final Translation2d[] moduleTranslations = {
-            new Translation2d(),
-            new Translation2d(),
-            new Translation2d(),
-            new Translation2d()
+            new Translation2d(trackWidthX / 2, trackWidthY / 2),
+            new Translation2d(trackWidthX / 2, -trackWidthY / 2),
+            new Translation2d(-trackWidthX / 2, trackWidthY / 2),
+            new Translation2d(-trackWidthX / 2, -trackWidthY / 2)
     };
 
     public static final ModuleLimits moduleLimitsFree = new ModuleLimits(maxLinearSpeed.get(),

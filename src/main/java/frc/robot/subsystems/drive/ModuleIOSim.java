@@ -42,6 +42,9 @@ public class ModuleIOSim implements ModuleIO {
   public ModuleIOSim() {
     // Enable wrapping for turn PID
     turnController.enableContinuousInput(-Math.PI, Math.PI);
+
+    setDrivePID(0.1, 0, 0);
+    setTurnPID(10, 0, 0);
   }
 
   @Override
