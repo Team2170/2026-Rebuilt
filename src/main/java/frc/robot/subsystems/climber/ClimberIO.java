@@ -46,7 +46,7 @@ public interface ClimberIO {
    * sets the motors position to a given rotation
    * @param rot desired rotation position of the motor
    */
-  public void set_climbing_state(Rotation2d rot)
+  public void set_climbing_state(Rotation2d rot);
 
   public void set_tilt_state(Rotation2d rot);
 

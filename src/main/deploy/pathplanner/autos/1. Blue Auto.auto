@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue start to HP"
+            "pathName": "1. Blue start to HP"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue HP to hub"
+            "pathName": "1. Blue HP to hub"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue hub to climb"
+            "pathName": "1. Blue hub to climb"
           }
         },
         {

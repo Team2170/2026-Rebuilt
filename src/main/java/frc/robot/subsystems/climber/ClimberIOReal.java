@@ -28,12 +28,12 @@ public class ClimberIOReal implements ClimberIO {
    *            parameters.
    */
   public ClimberIOReal() {
-    climbing_motor = new TalonFX(Constants.ClimberConstants.CLIMB_MOTOR_ID); // USE CONSTANTS CLASS LATER
-    tilting_motor = new TalonFX(Constants.ClimberConstants.TILT_MOTOR_ID); // USE CONSTANTS CLASS LATER
+    climbing_motor = new TalonFX(Constants.ClimberConstants.CLIMB_MOTOR_ID);
+    tilting_motor = new TalonFX(Constants.ClimberConstants.TILT_MOTOR_ID);
     configMotor();
     request = new DutyCycleOut(0).withEnableFOC(true);
     holdPosRequest = new PositionDutyCycle(0);
-    holdPosRequest.Velocity = Constants.ClimberConstants.TILTING_SPEED; // TODO: change later
+    holdPosRequest.Velocity = Constants.ClimberConstants.TILTING_SPEED;
   }
 
   /** Configures the motor with the provided parameters. */
