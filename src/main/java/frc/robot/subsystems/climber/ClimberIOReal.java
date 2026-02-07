@@ -20,6 +20,7 @@ public class ClimberIOReal implements ClimberIO {
 
   private DutyCycleOut request;
   private PositionDutyCycle holdPosRequest;
+  private Position
 
   /**
    * Constructs a ClimberIOReal instance with the given configuration.
@@ -70,10 +71,14 @@ public class ClimberIOReal implements ClimberIO {
 
 public void set_climb_percent_out(double percent) {
   climbing_motor.setControl(request.withOutput(percent));
+  climbing_motor.setPosition(0);
 }
 
   public void set_climbing_state(Rotation2d rot) {
-    climbing_motor.setControl(holdPosRequest.withPosition(rot.getRotations()));
+    climbing_motor.setPosition(0); // MAY NOT WORK. ALTERNATIVE ALSO PRESENT.
+    holdPosRequest.withFeedForward(Constants.ClimberConstants.CLIMBING_UP_SPEED);
+    holdPosRequest.withPosition(climbing_motor.getRotorPosition().getValueAsDouble() + rot.getRotations()); // MAY NOT BE NECESSARY.
+    climbing_motor.setControl(holdPosRequest);
   }
 
   public void set_tilt_state(Rotation2d rot) {

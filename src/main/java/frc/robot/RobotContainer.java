@@ -42,9 +42,6 @@ public class RobotContainer {
 
     // private final Drive drive;
     // private final Vision limelightExample;
-    private final CommandXboxController driverController = new CommandXboxController(0);
-    // private final CommandXboxController operatorController = new
-    // CommandXboxController(1);
 
     // private final Alert primaryDisconnected = new Alert("Primary controller
     // disconnected (port 0).",
@@ -65,7 +62,7 @@ public class RobotContainer {
     private final Alert operatorDisconnected = new Alert("Operator controller disconnected.", AlertType.kWarning);
     private final Alert overrideDisconnected = new Alert("Override controller disconnected.", AlertType.kInfo);
 
-    // private final LoggedDashboardChooser<Command> autoChooser; //TODO
+    private final LoggedDashboardChooser<Command> autoChooser;
 
     public RobotContainer() {
         switch (Constants.robotMode) {
@@ -109,8 +106,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return autoChooser.get();
-        return null; //TODO
+        return autoChooser.get();
     }
 
     // Update dashboard data

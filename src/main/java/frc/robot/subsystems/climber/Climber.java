@@ -87,7 +87,8 @@ public class Climber extends SubsystemBase {
   }
 
   /**
-   * resets the climbing motors back to their initial positions to prepare for another climb
+   * resets the climbing motors back to their initial positions to prepare for
+   * another climb
    */
   public void reset() {
     io.set_climbing_state(Constants.ClimberConstants.TOWER_L0);
@@ -97,6 +98,11 @@ public class Climber extends SubsystemBase {
    * moves the climbing motors until it is at l1
    */
   public void climb_L1() {
+    /*
+     * TODO: Figure out
+     * climber must first go in reverse to allow the hooks to catch level 1. climber
+     * must then go forward just enough to allow stationary hooks to grab l1.
+     */
     io.set_climbing_state(Constants.ClimberConstants.TOWER_L1);
   }
 }
