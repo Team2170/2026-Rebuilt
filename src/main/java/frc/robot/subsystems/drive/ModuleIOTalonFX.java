@@ -36,7 +36,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.constants.DriveConstants;
-import frc.robot.constants.DriveConstants.ModuleConfig;
+import frc.robot.constants.DriveConstants.ModuleConfigs;
 import frc.robot.util.PhoenixUtil;
 
 public class ModuleIOTalonFX implements ModuleIO {
@@ -81,7 +81,7 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final StatusSignal<Current> turnTorqueCurrentAmps;
 
   //TODO Configure properly
-  public ModuleIOTalonFX(ModuleConfig config) {
+  public ModuleIOTalonFX(ModuleConfigs config) {
     driveTalon = new TalonFX(config.driveMotorId(), "rio");
     turnTalon = new TalonFX(config.turnMotorId(), "rio");
     encoder = new CANcoder(config.encoderChannel(), "rio");

@@ -1,10 +1,14 @@
 package frc.robot;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,6 +34,7 @@ import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.util.OverrideSwitches;
@@ -64,6 +69,8 @@ public class RobotContainer {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
+    private SwerveDriveSimulation driveSimulation;
+
     public RobotContainer() {
         switch (Constants.robotMode) {
             case REAL:
@@ -75,8 +82,12 @@ public class RobotContainer {
                 climber = new Climber(new ClimberIOReal());
                 break;
             default:
+                driveSimulation = new SwerveDriveSimulation(DriveConstants.mapleSimConfig,
+                        new Pose2d(3, 3, new Rotation2d()));
+                SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation); 
+
                 drive = new Drive(
-                        new GyroIO() {},
+                        new GyroIOSim(driveSimulation.getGyroSimulation()),
                         new ModuleIOSim(),
                         new ModuleIOSim(),
                         new ModuleIOSim(),
@@ -90,6 +101,10 @@ public class RobotContainer {
         }));
         // TODO: Add shoot command
         // TODO: Add intake commands?
+        // autoChooser = new LoggedDashboardChooser<>("Auto Routines",
+        // AutoBuilder.buildAutoChooser(drive));
+
+        // TODO add sysId routines
 
         autoChooser = new LoggedDashboardChooser<>("Auto Routines");
         
