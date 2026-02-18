@@ -3,18 +3,24 @@ package frc.robot.constants;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class Constants {
-    public static final double loopPeriodSecs = 0.02;
-    public static final Mode robotMode = RobotBase.isReal() ? Mode.REAL : Mode.SIM;
-    public static final boolean tuningMode = false;
+    public static final Mode simMode = Mode.SIM;
+    public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-    public enum Mode {
+    public static enum Mode {
+        /** Running on a real robot. */
         REAL,
-        SIM
+
+        /** Running a physics simulator. */
+        SIM,
+
+        /** Replaying from a log file. */
+        REPLAY
     }
 
-    public static boolean disableHAL = false;
-
-    public static void disableHAL() {
-        disableHAL = true;
+    public static class ShooterConstants {
+        // TODO: Set these to the correct values
+        public static final int ShooterBackMasterMotorId = 1;
+        public static final int ShooterBackFollowerMotorId = 2;
+        public static final int ShooterFrontMotorId = 3;
     }
 }

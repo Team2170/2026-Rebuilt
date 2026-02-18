@@ -15,13 +15,12 @@ public class GyroIOSim implements GyroIO {
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-        inputs.data = new GyroIOData(
-                true,
-                gyroSimulation.getGyroReading(),
-                gyroSimulation.getMeasuredAngularVelocity(),
-                0,
-                0,
-                0,
-                0;
+        inputs.connected = true;
+        inputs.yawPosition = gyroSimulation.getGyroReading();
+        inputs.yawVelocityRadPerSec = Units.degreesToRadians(
+                gyroSimulation.getMeasuredAngularVelocity().in(RadiansPerSecond));
+
+        inputs.odometryYawTimestamps = PhoenixUtil.getSimulationOdometryTimeStamps();
+        inputs.odometryYawPositions = gyroSimulation.getCachedGyroReadings();
     }
 }
