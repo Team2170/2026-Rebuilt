@@ -5,12 +5,6 @@ plugins {
     id "io.freefair.lombok" version "8.4"
 }
 
-repositories {
-    maven {
-        url = uri("https://frcmaven.wpi.edu/artifactory/littletonrobotics-mvn-release")
-    }
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
