@@ -14,7 +14,7 @@ public class ShooterIOReal implements ShooterIO {
   private TalonFX BackFollowerMotor;
   private TalonFX FrontMotor;
   public static final double BACK_GEAR_RATIO = 1.00; // SET THIS UP
-  public static final double FRONT_GEAR_Ratio = 3;
+  public static final double FRONT_GEAR_RATIO = 3;
   private DutyCycleOut request;
 
   /**
@@ -28,6 +28,7 @@ public class ShooterIOReal implements ShooterIO {
     FrontMotor = new TalonFX(Constants.ShooterConstants.ShooterFrontMotorId);
     configMotor();
     request = new DutyCycleOut(0).withEnableFOC(true);
+    
   }
 
   /** Configures the motor with the provided parameters. */
@@ -44,7 +45,7 @@ public class ShooterIOReal implements ShooterIO {
     BackMasterMotor.getConfigurator().apply(internalConfig);
     BackFollowerMotor.getConfigurator().apply(internalConfig);
 
-    internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_Ratio);
+    internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_RATIO);
     FrontMotor.getConfigurator().apply(internalConfig);
   }
 
