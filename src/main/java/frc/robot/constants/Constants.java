@@ -23,4 +23,9 @@ public class Constants {
         public static final int ShooterBackFollowerMotorId = 2;
         public static final int ShooterFrontMotorId = 3;
     }
+
+    public static class HopperConstants{
+        // TODO: Set these to the correct values
+        public static final int HopperMotorId = 4;
+    }
 }
