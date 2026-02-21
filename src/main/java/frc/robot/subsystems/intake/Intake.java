@@ -24,10 +24,10 @@ public class Intake extends SubsystemBase{
 
 
    //Constructor with spin and intake motor
-   public Intake(){
+    public Intake(){
        spinMotor = new TalonFX(Constants.IntakeConstants.SpinMotorId, Constants.canbus);
        liftMotor = new TalonFX(Constants.IntakeConstants.LiftMotorId, Constants.canbus);
-       request = new DutyCycleOut(0).withEnableFOC(true);
+       
 
 
        //Assorted Configs
@@ -38,13 +38,22 @@ public class Intake extends SubsystemBase{
        spinConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
        liftConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       
-      
+
+        liftConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        liftConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;   //Bottom position CHANGE THIS!!
+
+        liftConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        liftConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 50;  //CHANGE to your real max rotations
+
+        spinMotor.getConfigurator().apply(spinConfig);
+        liftMotor.getConfigurator().apply(liftConfig);
+
+        //Zero lift encoder at startup (important for soft limits)
+        liftMotor.setPosition(0);
 
 
        spinMotor.setNeutralMode(NeutralModeValue.Brake);
        liftMotor.setNeutralMode(NeutralModeValue.Brake);
-
-
 
 
 
@@ -69,29 +78,30 @@ public class Intake extends SubsystemBase{
 
 
 
-   public void stopSpin(){
+    public void stopSpin(){
        spinMotor.stopMotor();
-      
-   }
+    }
 
 
-   public void stopIntakeMechanism(){
+    public void stopIntakeMechanism(){
        liftMotor.stopMotor();
-   }
+    }
 
 
-   //Actual intake function/can also shoot out balls with negative values (range from -1 to 1)
-   public void setSpinPercentIn(double percent) {
-       spinMotor.setControl(request.withOutput(percent));
-   }  
+    //Actual intake function/can also shoot out balls with negative values (range from -1 to 1)
+    public void setSpinPercentIn(double percent) {
+        percent = Math.max(-1.0, Math.min(1.0, percent));
+        spinMotor.setControl(request.withOutput(percent));
+    }
 
 
 
 
-   //Motor that lifts up the mechanism
-   public void setLiftPercentOut(double percent) {
-       liftMotor.setControl(request.withOutput(percent));
-   }
+    //Motor that lifts up the mechanism
+    public void setLiftPercentOut(double percent) {
+        percent = Math.max(-1.0, Math.min(1.0, percent));
+        liftMotor.setControl(request.withOutput(percent));
+    }
 
 
 }

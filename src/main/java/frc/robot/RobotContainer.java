@@ -14,7 +14,6 @@
 package frc.robot;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,6 +34,10 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+//Importing Intake Subsystem and Commands
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.commands.IntakeSpinCommand;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
@@ -44,6 +47,9 @@ public class RobotContainer {
     // Subsystems
     private final Vision vision;
     private final Drive drive;
+    private final Intake intake;
+
+
     private SwerveDriveSimulation driveSimulation = null;
 
     // Controller
@@ -68,7 +74,9 @@ public class RobotContainer {
                         drive,
                         new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
                         new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
+
                 break;
+
 
             case SIM:
                 // Sim robot, instantiate physics sim IO implementations
@@ -117,6 +125,9 @@ public class RobotContainer {
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+        //Creating Intake Object
+        intake = new Intake();
+
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -145,6 +156,25 @@ public class RobotContainer {
                 ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
                 : () -> drive.resetOdometry(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
         controller.start().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
+
+
+        //Right Trigger - Intake going IN
+        controller.rightTrigger().whileTrue(
+                Commands.runEnd(
+                        () -> intake.setSpinPercentIn(0.7),
+                        () -> intake.stopSpin(),
+                        intake
+                )
+        );
+
+        //Right Bumper- Intake going OUT
+        controller.rightBumper().whileTrue(
+                Commands.runEnd(
+                        () -> intake.setSpinPercentIn(-0.7),
+                        () -> intake.stopSpin(),
+                        intake
+                )
+        );
     }
 
     /**
