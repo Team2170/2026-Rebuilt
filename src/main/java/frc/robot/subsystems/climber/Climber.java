@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -29,6 +30,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void configMotor() {
+    // Configure the motor controllers with the desired settings
     TalonFXConfiguration internalConfig = new TalonFXConfiguration();
 
     internalConfig.Slot0.kP = Constants.ClimberConstants.ClimberMotorkP;
@@ -44,13 +46,12 @@ public class Climber extends SubsystemBase {
     internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.ClimberConstants.ClimberMotorLowerLimit;
 
-    internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
-    internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+    internalConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    internalConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
     internalConfig.CurrentLimits.withStatorCurrentLimit(120);
     internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
     ClimberMotorLeader.getConfigurator().apply(internalConfig);
-
-    internalConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
     ClimberMotorFollower.getConfigurator().apply(internalConfig);
 
     ClimberMotorFollower.setControl(new Follower(ClimberMotorLeader.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -58,16 +59,16 @@ public class Climber extends SubsystemBase {
   }
 
   public void setPosition(double rotations) {
+    //Moves the climber to the desired position using Motion Magic control mode
     ClimberMotorLeader.setControl(ClimberMotionMagicVoltage.withPosition(rotations));
   }
 
   public void stop() {
+    // Stops the climber by setting the motor output to zero and maintaining position
     ClimberMotorLeader.stopMotor();
-    ClimberMotorFollower.stopMotor();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

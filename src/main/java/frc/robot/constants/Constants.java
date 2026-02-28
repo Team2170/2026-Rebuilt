@@ -71,8 +71,8 @@ public class Constants {
         public static double ClimberMotorkV = 0.12;
 
         public static double ClimberMotorCruiseVelocity = 50;
-        public static double ClimberMotorAcceleration = 100;
-        public static double ClimberMotorUpperLimit = 20;
+        public static double ClimberMotorAcceleration = 50;
+        public static double ClimberMotorUpperLimit = 120;
         public static double ClimberMotorLowerLimit = 0.5;
 
     }
