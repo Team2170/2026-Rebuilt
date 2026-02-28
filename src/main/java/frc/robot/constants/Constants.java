@@ -63,7 +63,17 @@ public class Constants {
     }
 
     public static class ClimberConstants{
+        //Adjust these values later
         public static int ClimberMotorLeaderId = 4;
         public static int ClimberMotorFollowerId = 5;
+
+        public static double ClimberMotorkP = 2.0;
+        public static double ClimberMotorkV = 0.12;
+
+        public static double ClimberMotorCruiseVelocity = 50;
+        public static double ClimberMotorAcceleration = 100;
+        public static double ClimberMotorUpperLimit = 20;
+        public static double ClimberMotorLowerLimit = 0.5;
+
     }
 }
