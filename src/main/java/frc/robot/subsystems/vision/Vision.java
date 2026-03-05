@@ -13,7 +13,14 @@
 
 package frc.robot.subsystems.vision;
 
-import static frc.robot.subsystems.vision.VisionConstants.*;
+import static frc.robot.constants.Constants.VisionConstants.aprilTagLayout;
+import static frc.robot.constants.Constants.VisionConstants.angularStdDevBaseline;
+import static frc.robot.constants.Constants.VisionConstants.angularStdDevMegatag2Factor;
+import static frc.robot.constants.Constants.VisionConstants.cameraStdDevFactors;
+import static frc.robot.constants.Constants.VisionConstants.linearStdDevBaseline;
+import static frc.robot.constants.Constants.VisionConstants.linearStdDevMegatag2Factor;
+import static frc.robot.constants.Constants.VisionConstants.maxAmbiguity;
+import static frc.robot.constants.Constants.VisionConstants.maxZError;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -49,13 +56,14 @@ public class Vision extends SubsystemBase {
         // Initialize disconnected alerts
         this.disconnectedAlerts = new Alert[io.length];
         for (int i = 0; i < inputs.length; i++) {
-            disconnectedAlerts[i] =
-                    new Alert("Vision camera " + Integer.toString(i) + " is disconnected.", AlertType.kWarning);
+            disconnectedAlerts[i] = new Alert("Vision camera " + Integer.toString(i) + " is disconnected.",
+                    AlertType.kWarning);
         }
     }
 
     /**
-     * Returns the X angle to the best target, which can be used for simple servoing with vision.
+     * Returns the X angle to the best target, which can be used for simple servoing
+     * with vision.
      *
      * @param cameraIndex The index of the camera to use.
      */
