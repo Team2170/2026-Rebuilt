@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 public class Constants {
     public static final Mode simMode = Mode.SIM;
     public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+    public static final CANBus canbus = new CANBus("rio");
 
     public static enum Mode {
         /** Running on a real robot. */
@@ -27,6 +28,11 @@ public class Constants {
         public static final int ShooterBackFollowerMotorId = 2;
         public static final int ShooterFrontMotorId = 3;
     }
+
+    public static class IntakeConstants{
+       public static final int SpinMotorId = 0;//change
+       public static final int LiftMotorId =0;//change
+   }
 
     public static class VisionConstants {
         public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
