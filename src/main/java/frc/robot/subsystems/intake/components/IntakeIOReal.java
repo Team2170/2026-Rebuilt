@@ -1,26 +1,26 @@
 package frc.robot.subsystems.intake.components;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.constants.Constants.IntakeConstants;
-import frc.robot.subsystems.intake.components.IntakeIO.IntakeIOInputs;
 
-public class IntakeIOReal {
+public class IntakeIOReal implements IntakeIO {
     private TalonFX IntakingMotor;
     private TalonFX LiftMotor;
     public static final double INTAKE_MOTOR_RATIO = 1;
     public static final double LIFT_GEAR_RATIO = 12;
-    private VelocityVoltage request;
+    private DutyCycleOut request;
 
     public IntakeIOReal() {
         IntakingMotor = new TalonFX(IntakeConstants.IntakingMotorID);
         LiftMotor = new TalonFX(IntakeConstants.IntakeLiftMotorID);
         configMotors();
-        request = new VelocityVoltage(0).withEnableFOC(true);
+        request = new DutyCycleOut(0).withEnableFOC(true);
     }
 
     public void configMotors() {
@@ -37,6 +37,7 @@ public class IntakeIOReal {
         IntakingMotor.getConfigurator().apply(internalConfig);
 
         internalConfig.Feedback.withSensorToMechanismRatio(LIFT_GEAR_RATIO);
+        internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 
         LiftMotor.getConfigurator().apply(internalConfig);
     }
@@ -55,5 +56,19 @@ public class IntakeIOReal {
         inputs.LiftMotorPositionError = LiftMotor.getClosedLoopError().getValueAsDouble();
     }
 
-    
+    public void setIntakePower(double percent) {
+        IntakingMotor.setControl(request.withOutput(percent));
+    }
+
+    public void setLiftPower(double percent) {
+        LiftMotor.setControl(request.withOutput(percent));
+    }
+
+    public void stopIntake() {
+        IntakingMotor.stopMotor();
+    }
+
+    public void stopLift() {
+        LiftMotor.stopMotor();
+    }
 }

@@ -31,23 +31,26 @@ public interface IntakeIO {
     /**
      * Sets the intake motor output as a percentage of total power.
      *
-     * @param rps The rotational velocity output to set the intaking motor (RPS).
+     * @param percent The desired power percentage (between -1.0 and 1.0).
      */
-    public default void setIntakeVelocity(double rps) {
+    public default void setIntakePower(double percent) {
     }
 
     /**
      * Sets the intake motor output as a percentage of total power.
      *
-     * @param rps The rotational velocity output to set the intaking motor (RPS).
+     * @param percent The desired power percentage (between -1.0 and 1.0).
      */
-    public default void setLiftVelocity(double rps) {
+    public default void setLiftPower(double percent) {
     }
 
     // public default void setPercentOut(double percent) {
     // }
 
     /** Stops the shooter motor. */
-    public default void stop() {
+    public default void stopIntake() {
+    }
+    
+    public default void stopLift() {
     }
 }

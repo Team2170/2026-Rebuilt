@@ -25,14 +25,14 @@ public class Constants {
     }
 
     public static class ShooterConstants {
-        public static final int ShooterBackMasterMotorId = 0;
-        public static final int ShooterBackFollowerMotorId = 1;
-        public static final int ShooterFrontMotorId = 2;
+        public static final int ShooterBackMasterMotorId = 15;
+        public static final int ShooterBackFollowerMotorId = 16;
+        public static final int ShooterFrontMotorId = 19;
     }
 
     public static class IntakeConstants{
-       public static final int IntakeLiftMotorID = 0; //change
-       public static final int IntakingMotorID = 0; //change
+       public static final int IntakeLiftMotorID = 18;
+       public static final int IntakingMotorID = 17;
    }
 
     public static class VisionConstants {

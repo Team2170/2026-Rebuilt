@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
   /**
    * Sets the motor output as a percentage of total power.
    *
-   * @param percent The percentage output to set the climber motor (-1.0 to 1.0).
+   * @param rps The desired velocity in rotations per second.
    */
   public void setVelocityOut(double rps) {
     io.setVelocityOut(rps);

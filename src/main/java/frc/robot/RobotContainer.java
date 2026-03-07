@@ -25,6 +25,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -42,9 +44,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 //Importing Intake Subsystem and Commands
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.components.IntakeIOReal;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.components.ShooterIOReal;
-import frc.robot.commands.IntakeSpinCommand;
+// import frc.robot.commands.IntakeSpinCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -58,12 +61,14 @@ public class RobotContainer {
 	// Subsystems
 	private final Vision vision;
 	private final Drive drive;
-	// private final Intake intake;
+	private final Intake intake;
 	private final Shooter shooter;
 	private SwerveDriveSimulation driveSimulation = null;
 
 	// Controller
+
 	private final CommandXboxController driverController = new CommandXboxController(0);
+
 	private final CommandXboxController operatorController = new CommandXboxController(1);
 
 	// Dashboard inputs
@@ -90,6 +95,7 @@ public class RobotContainer {
 				new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
 
 		shooter = new Shooter("Shooter", new ShooterIOReal());
+		intake = new Intake("Intake", new IntakeIOReal());
 		// break;
 
 		// case SIM:
@@ -157,6 +163,7 @@ public class RobotContainer {
 
 		// Configure the button bindings
 		configureButtonBindings();
+
 	}
 
 	/**
@@ -189,9 +196,30 @@ public class RobotContainer {
 				: () -> drive.resetOdometry(
 						new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 		driverController.y().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
-		
-        operatorController.a().onTrue(new InstantCommand(() -> shooter.setVelocityOut(80)))
-                .onFalse(new InstantCommand(() -> shooter.stop()));
+
+		operatorController.a().onTrue(new InstantCommand(() -> shooter.setVelocityOut(80)))
+				.onFalse(new InstantCommand(() -> shooter.stop()));
+
+		operatorController.b().onTrue(new InstantCommand(() -> intake.setIntakePower(0.8)))
+				.onFalse(new InstantCommand(() -> intake.stopIntake()));
+
+		operatorController.y().onTrue(new InstantCommand(() -> intake.setLiftPower(0.2)))
+				.onFalse(new InstantCommand(() -> intake.stopLift()));
+
+		operatorController.x().onTrue(new InstantCommand(() -> intake.setLiftPower(-0.2)))
+				.onFalse(new InstantCommand(() -> intake.stopLift()));
+
+		// operatorController.leftBumper().onTrue(new InstantCommand(() ->
+		// intake.setIntakeVelocity(-60)))
+		// .onFalse(new InstantCommand(() -> intake.stopIntake()));
+
+		// operatorController.y().onTrue(new InstantCommand(() ->
+		// intake.setLiftVelocity(5)))
+		// .onFalse(new InstantCommand(() -> intake.stopLift()));
+
+		// operatorController.x().onTrue(new InstantCommand(() ->
+		// intake.setLiftVelocity(-5)))
+		// .onFalse(new InstantCommand(() -> intake.stopLift()));
 	}
 
 	/**

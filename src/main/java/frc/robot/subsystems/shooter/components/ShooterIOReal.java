@@ -46,7 +46,7 @@ public class ShooterIOReal implements ShooterIO {
     BackFollowerMotor.getConfigurator().apply(internalConfig);
     BackMasterMotor.getConfigurator().apply(internalConfig);
 
-    internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+    internalConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
     internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
     internalConfig.Feedback.withSensorToMechanismRatio(BACK_GEAR_RATIO);
     internalConfig.CurrentLimits.withStatorCurrentLimit(120);
@@ -62,6 +62,7 @@ public class ShooterIOReal implements ShooterIO {
     BackFollowerMotor.getConfigurator().apply(internalConfig);
     BackFollowerMotor.setControl(new Follower(BackFollowerMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
+    internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
     internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_RATIO);
     FrontMotor.getConfigurator().apply(internalConfig);
   }
@@ -105,7 +106,7 @@ public class ShooterIOReal implements ShooterIO {
   //   FrontMotor.setControl(request.withOutput(percent));
   // }
 
-  /** Stops the climber motor. */
+  /** Stops the shooter motor. */
   public void stop() {
     BackFollowerMotor.stopMotor();
     BackMasterMotor.stopMotor();
