@@ -1,10 +1,14 @@
 package frc.robot.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.shooter.components.ShooterIO;
+import frc.robot.subsystems.shooter.components.ShooterIOInputsAutoLogged;
 
 public class Shooter extends SubsystemBase {
   private final ShooterIO io;
+  private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
   private final String SubystemName;
 
   /**
@@ -24,6 +28,8 @@ public class Shooter extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs(SubystemName, inputs);
   }
 
   /**
@@ -31,11 +37,15 @@ public class Shooter extends SubsystemBase {
    *
    * @param percent The percentage output to set the climber motor (-1.0 to 1.0).
    */
-  public void setPercentOut(double percent) {
-    io.setPercentOut(percent);
+  public void setVelocityOut(double rps) {
+    io.setVelocityOut(rps);
   }
 
-  /** Stops the climber, setting the output to zero and maintaining position. */
+  // public void setPercentOut(double percent) {
+  //   io.setPercentOut(percent);
+  // }
+  
+  /** Stops the shooter, setting the output to zero and maintaining position. */
   public void stop() {
     io.stop();
   }

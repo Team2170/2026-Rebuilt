@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -23,15 +25,14 @@ public class Constants {
     }
 
     public static class ShooterConstants {
-        // TODO: Set these to the correct values
-        public static final int ShooterBackMasterMotorId = 1;
-        public static final int ShooterBackFollowerMotorId = 2;
-        public static final int ShooterFrontMotorId = 3;
+        public static final int ShooterBackMasterMotorId = 0;
+        public static final int ShooterBackFollowerMotorId = 1;
+        public static final int ShooterFrontMotorId = 2;
     }
 
     public static class IntakeConstants{
-       public static final int SpinMotorId = 0;//change
-       public static final int LiftMotorId =0;//change
+       public static final int IntakeLiftMotorID = 0; //change
+       public static final int IntakingMotorID = 0; //change
    }
 
     public static class VisionConstants {
