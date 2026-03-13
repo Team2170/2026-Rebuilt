@@ -35,18 +35,21 @@ public interface ShooterIO {
 	public default void updateInputs(ShooterIOInputs inputs) {
 	}
 
+	public default double calculateRPS(double tagDistance, double ty) {
+		return 0;
+	}
+
 	/**
 	 * Sets the shooter motor output as a percentage of total power.
 	 *
 	 * @param rps The rotational velocity output to set the shooter motor (RPS).
 	 */
-	public default void setVelocityOut(double rps) {
+	public default void setShooterVelocityOut(double rps) {
 	}
 
-	// public default void setPercentOut(double percent) {
-	// }
+	public default void setFeedMotorVelocityOut(double rps) {
+	}
 
-	/** Stops the shooter motor. */
 	public default void stop() {
 	}
 }

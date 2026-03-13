@@ -13,14 +13,19 @@
 
 package frc.robot.subsystems.vision;
 
-import static frc.robot.constants.Constants.VisionConstants.aprilTagLayout;
 import static frc.robot.constants.Constants.VisionConstants.angularStdDevBaseline;
 import static frc.robot.constants.Constants.VisionConstants.angularStdDevMegatag2Factor;
+import static frc.robot.constants.Constants.VisionConstants.aprilTagLayout;
 import static frc.robot.constants.Constants.VisionConstants.cameraStdDevFactors;
 import static frc.robot.constants.Constants.VisionConstants.linearStdDevBaseline;
 import static frc.robot.constants.Constants.VisionConstants.linearStdDevMegatag2Factor;
 import static frc.robot.constants.Constants.VisionConstants.maxAmbiguity;
 import static frc.robot.constants.Constants.VisionConstants.maxZError;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -32,10 +37,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
-import java.util.LinkedList;
-import java.util.List;
-import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.vision.components.VisionIO;
+import frc.robot.subsystems.vision.components.VisionIO.PoseObservationType;
+import frc.robot.subsystems.vision.components.VisionIOInputsAutoLogged;
 
 public class Vision extends SubsystemBase {
     private final VisionConsumer consumer;
@@ -69,6 +73,14 @@ public class Vision extends SubsystemBase {
      */
     public Rotation2d getTargetX(int cameraIndex) {
         return inputs[cameraIndex].latestTargetObservation.tx();
+    }
+
+    public Rotation2d getTargetY(int cameraIndex) {
+        return inputs[cameraIndex].latestTargetObservation.ty();
+    }
+
+    public boolean hasTarget(int cameraIndex) {
+        return inputs[cameraIndex].tagIds.length > 0;
     }
 
     @Override
@@ -109,6 +121,8 @@ public class Vision extends SubsystemBase {
                 boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
                         || (observation.tagCount() == 1
                                 && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+                        || (observation.tagCount() == 1
+                                && observation.type() == PoseObservationType.MEGATAG_1)
                         || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
 
                         // Must be within the field boundaries
@@ -178,6 +192,43 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput(
                 "Vision/Summary/RobotPosesRejected",
                 allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
+    }
+
+    /**
+     * Returns the index of the camera with the best target lock,
+     * or -1 if no camera has a target.
+     */
+    public int getBestCameraIndex() {
+        int bestCamera = -1;
+        double bestTx = Double.MAX_VALUE;
+        for (int i = 0; i < inputs.length; i++) {
+            if (inputs[i].tagIds.length > 0) {
+                double tx = Math.abs(inputs[i].latestTargetObservation.tx().getDegrees());
+                if (tx < bestTx) {
+                    bestTx = tx;
+                    bestCamera = i;
+                }
+            }
+        }
+        return bestCamera;
+    }
+
+    /**
+     * Returns the distance to the nearest tag in meters for the given camera, or -1
+     * if no target.
+     */
+    public double getTagDistance(int cameraIndex) {
+        if (!hasTarget(cameraIndex))
+            return -1.0;
+        var observations = inputs[cameraIndex].poseObservations;
+        if (observations.length == 0)
+            return -1.0;
+        return observations[observations.length - 1].averageTagDistance();
+    }
+
+    /** Returns whether any camera has a target. */
+    public boolean hasAnyTarget() {
+        return getBestCameraIndex() != -1;
     }
 
     @FunctionalInterface

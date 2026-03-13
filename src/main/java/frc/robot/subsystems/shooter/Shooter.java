@@ -32,20 +32,23 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs(SubystemName, inputs);
   }
 
+  public double calculateRPS(double tagDistance, double ty) {
+    return io.calculateRPS(tagDistance, ty);
+  }
+
   /**
    * Sets the motor output as a percentage of total power.
    *
    * @param rps The desired velocity in rotations per second.
    */
-  public void setVelocityOut(double rps) {
-    io.setVelocityOut(rps);
+  public void setShooterVelocityOut(double rps) {
+    io.setShooterVelocityOut(rps);
   }
 
-  // public void setPercentOut(double percent) {
-  //   io.setPercentOut(percent);
-  // }
+  public void setFeedMotorVelocityOut(double rps) {
+    io.setFeedMotorVelocityOut(rps);
+  }
   
-  /** Stops the shooter, setting the output to zero and maintaining position. */
   public void stop() {
     io.stop();
   }

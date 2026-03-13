@@ -7,12 +7,14 @@ import com.ctre.phoenix6.signals.ControlModeValue;
 public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
+        public double LiftMotorPosition = 1;
         public double LiftMotorTorqueCurrentAmps = -1;
         public double LiftMotorVelocityRotPerSec = -1;
         public boolean LiftMotorMotorConnected = false;
         public ControlModeValue LiftMotorControlMode = ControlModeValue.DisabledOutput;
         public double LiftMotorPositionError = -1;
 
+        public double IntakingMotorPosition = -1;
         public double IntakingMotorTorqueCurrentAmps = -1;
         public double IntakingMotorVelocityRotPerSec = -1;
         public boolean IntakingMotorMotorConnected = false;
