@@ -78,6 +78,8 @@ public class Robot extends LoggedRobot {
         // the Command-based framework to work.
         CommandScheduler.getInstance().run();
 
+        robotContainer.periodic();
+
         // Return to normal thread priority
         Threads.setCurrentThreadPriority(false, 10);
     }
@@ -95,7 +97,9 @@ public class Robot extends LoggedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
+        
         autonomousCommand = robotContainer.getAutonomousCommand();
+        
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {

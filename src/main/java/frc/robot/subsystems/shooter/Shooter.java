@@ -32,6 +32,10 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs(SubystemName, inputs);
   }
 
+  public boolean atRPS() {
+    return io.atRPS();
+  }
+
   public double calculateRPS(double tagDistance, double ty) {
     return io.calculateRPS(tagDistance, ty);
   }

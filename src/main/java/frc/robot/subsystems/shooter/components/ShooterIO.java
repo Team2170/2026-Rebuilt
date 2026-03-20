@@ -8,11 +8,11 @@ import com.ctre.phoenix6.signals.ControlModeValue;
 public interface ShooterIO {
 	@AutoLog
 	public static class ShooterIOInputs {
-		public double FrontMotorTorqueCurrentAmps = -1;
-		public double FrontMotorVelocityRotPerSec = -1;
-		public boolean FrontMotorMotorConnected = false;
-		public ControlModeValue FrontMotorControlMode = ControlModeValue.DisabledOutput;
-		public double FrontMotorPositionError = -1;
+		public double FeedMotorTorqueCurrentAmps = -1;
+		public double FeedMotorVelocityRotPerSec = -1;
+		public boolean FeedMotorMotorConnected = false;
+		public ControlModeValue FeedMotorControlMode = ControlModeValue.DisabledOutput;
+		public double FeedMotorPositionError = -1;
 
 		public double BackMasterMotorTorqueCurrentAmps = -1;
 		public double BackMasterMotorVelocityRotPerSec = -1;
@@ -25,6 +25,14 @@ public interface ShooterIO {
 		public boolean BackFollowerMotorMotorConnected = false;
 		public ControlModeValue BackFollowerMotorControlMode = ControlModeValue.DisabledOutput;
 		public double BackFollowerMotorPositionError = -1;
+
+		public double distanceToTarget = -1;
+		public double rps = -1;
+
+		public double ty = -99999;
+		public double tagDistance = -1;
+		public double radians = -1;
+		public double cosine = -1;
 	}
 
 	/**
@@ -33,6 +41,10 @@ public interface ShooterIO {
 	 * @param inputs The ShooterIOInputs object to be updated.
 	 */
 	public default void updateInputs(ShooterIOInputs inputs) {
+	}
+
+	public default boolean atRPS() {
+		return false;
 	}
 
 	public default double calculateRPS(double tagDistance, double ty) {

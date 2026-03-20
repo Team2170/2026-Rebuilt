@@ -13,6 +13,13 @@
 
 package frc.robot.commands;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -29,27 +36,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 import frc.robot.subsystems.vision.Vision;
 
 public class DriveCommands {
 	private static final double DEADBAND = 0.1;
-	private static final double ANGLE_KP = 5.0;
+	private static final double ANGLE_KP = 10.0;
 	private static final double ANGLE_KD = 0.4;
 	private static final double ANGLE_MAX_VELOCITY = 8.0;
-	private static final double ANGLE_MAX_ACCELERATION = 20.0;
+	private static final double ANGLE_MAX_ACCELERATION = 40.0;
 	private static final double FF_START_DELAY = 2.0; // Secs
 	private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
 	private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
 	private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+	public static boolean autoAligned = false;
 
-	private DriveCommands() {
-	}
+	private DriveCommands() {}
 
 	private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
 		// Apply deadband
@@ -110,6 +111,7 @@ public class DriveCommands {
 		ProfiledPIDController angleController = new ProfiledPIDController(
 				ANGLE_KP, 0.0, ANGLE_KD, new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
 		angleController.enableContinuousInput(-Math.PI, Math.PI);
+		angleController.setTolerance(Units.degreesToRadians(1.5));
 
 		// Construct command
 		return Commands.run(
@@ -119,9 +121,10 @@ public class DriveCommands {
 							ySupplier.getAsDouble());
 
 					// Calculate angular speed
-					double omega = angleController.calculate(
-							drive.getRotation().getRadians(),
-							rotationSupplier.get().getRadians());
+					double omega = angleController.atGoal() ? 0.0
+							: angleController.calculate(
+									drive.getRotation().getRadians(),
+									rotationSupplier.get().getRadians());
 
 					// Convert to field relative speeds & send command
 					ChassisSpeeds speeds = new ChassisSpeeds(
@@ -161,9 +164,15 @@ public class DriveCommands {
 				ySupplier,
 				() -> {
 					int bestCamera = vision.getBestCameraIndex();
-					return bestCamera != -1
-							? drive.getRotation().plus(vision.getTargetX(bestCamera))
-							: drive.getRotation(); // hold heading if no camera sees a tag
+					if (bestCamera == -1)
+						return drive.getRotation();
+					Rotation2d tx = vision.getTargetX(bestCamera);
+					// Don't chase inside 1°
+					if (Math.abs(tx.getDegrees()) < 1.0) {
+						autoAligned = true;
+						return drive.getRotation();
+					}
+					return drive.getRotation().plus(tx);
 				});
 	}
 

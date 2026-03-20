@@ -32,6 +32,8 @@ public class IntakeIOReal implements IntakeIO {
         internalConfig.Feedback.withSensorToMechanismRatio(INTAKE_MOTOR_RATIO);
         internalConfig.CurrentLimits.withStatorCurrentLimit(35);
         internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
+        internalConfig.CurrentLimits.withSupplyCurrentLimit(25);
+        internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);    
 
         IntakingMotor.getConfigurator().apply(internalConfig);
 

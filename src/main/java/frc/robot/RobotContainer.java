@@ -14,6 +14,8 @@
 package frc.robot;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -28,13 +30,16 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -52,7 +57,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.components.IntakeIOReal;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.components.ShooterIOReal;
+import frc.robot.subsystems.shooter.components.ShooterIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.components.VisionIO;
 import frc.robot.subsystems.vision.components.VisionIOLimelight;
@@ -75,7 +80,7 @@ public class RobotContainer {
 
 	// Controller
 
-	private final CommandXboxController driverController = new CommandXboxController(0);
+	public final CommandXboxController driverController = new CommandXboxController(0);
 
 	private final CommandXboxController operatorController = new CommandXboxController(1);
 
@@ -99,10 +104,9 @@ public class RobotContainer {
 						});
 				vision = new Vision(
 						drive,
-						new VisionIOLimelight(VisionConstants.leftCameraName, drive::getRotation),
 						new VisionIOLimelight(VisionConstants.rightCameraName, drive::getRotation));
 
-				shooter = new Shooter("Shooter", new ShooterIOReal());
+				shooter = new Shooter("Shooter", new ShooterIOTalonFX());
 				intake = new Intake("Intake", new IntakeIOReal());
 				break;
 
@@ -165,13 +169,45 @@ public class RobotContainer {
 				drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
 		autoChooser.addOption("Drive SysId (Dynamic Reverse)",
 				drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+		autoChooser.addOption("Shoot To Hub", new ParallelCommandGroup(
+				new InstantCommand(
+						() -> shooter.setShooterVelocityOut(
+								vision.hasAnyTarget()
+										? shooter.calculateRPS(
+												vision.getTagDistance(vision.getBestCameraIndex()),
+												vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
+										: 50),
+						shooter),
+				new WaitCommand(1).andThen(new InstantCommand(
+						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))
+				.andThen(new WaitCommand(5)).andThen(new InstantCommand(() -> shooter.stop())));
+
+		autoChooser.addOption("PLEASEEEEEEEEE", DriveCommands.joystickDrive(drive, new DoubleSupplier() {
+			@Override
+			public double getAsDouble() {
+				return 0;
+			}
+		}, new DoubleSupplier() {
+			@Override
+			public double getAsDouble() {
+				return -1;
+			}
+		}, new DoubleSupplier() {
+			@Override
+			public double getAsDouble() {
+				return 0;
+			}
+		}));
+
 		try {
-			autoChooser.addOption("Forward 10 m",
+			autoChooser.addOption("Potential Shoot?",
 					AutoBuilder.followPath(PathPlannerPath.fromPathFile("Running Rotation"))
 							.deadlineFor(new ParallelCommandGroup(
 									new InstantCommand(() -> shooter.setShooterVelocityOut(5)),
 									new WaitCommand(0.5).andThen(new InstantCommand(
 											() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))));
+			autoChooser.addOption("To Middle", AutoBuilder.followPath(PathPlannerPath.fromPathFile("To Middle")));
+			autoChooser.addOption("RAHHHHHH", AutoBuilder.followPath(PathPlannerPath.fromPathFile("RAHHHHHH")));
 		} catch (FileVersionException | IOException | ParseException e) {
 			DriverStation.reportError("Failed to load auto paths", e.getStackTrace());
 			e.printStackTrace();
@@ -179,7 +215,6 @@ public class RobotContainer {
 
 		// Configure the button bindings
 		configureButtonBindings();
-
 	}
 
 	/**
@@ -193,8 +228,9 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Default command, normal field-relative drive
 		drive.setDefaultCommand(DriveCommands.joystickDrive(
-				drive, () -> -driverController.getLeftY(), () -> -driverController.getLeftX(),
-				() -> -driverController.getRightX()));
+				drive, () -> -driverController.getLeftY(),
+				() -> -driverController.getLeftX(),
+				() -> driverController.getRightX()));
 
 		// Lock to 0° when A button is held
 		driverController
@@ -217,14 +253,7 @@ public class RobotContainer {
 				? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
 				: () -> drive.resetOdometry(
 						new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
-		driverController.y().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
-
-		// 120 inches = 60 rps
-		// 100 inches = 55 rps
-		// 90 inches = 50 rps
-		// 80 inches = 50 rps
-		// 60 inches = 45 rps
-		// 40 inches = 40 rps
+		driverController.a().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
 
 		operatorController.a().onTrue(
 				new ParallelCommandGroup(
@@ -236,8 +265,15 @@ public class RobotContainer {
 														vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
 												: 50),
 								shooter),
-						new WaitCommand(1).andThen(new InstantCommand(
+						new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
 								() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+				.onFalse(new InstantCommand(() -> shooter.stop()));
+
+		//TODO Add separate rev to speed motor
+
+		operatorController.y().onTrue(new ParallelCommandGroup(
+				new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
+						new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
 				.onFalse(new InstantCommand(() -> shooter.stop()));
 
 		operatorController.rightBumper().onTrue(new InstantCommand(() -> intake.setIntakePower(-0.5)))
@@ -251,6 +287,80 @@ public class RobotContainer {
 
 		operatorController.povDown().onTrue(new InstantCommand(() -> intake.setLiftPower(-0.2)))
 				.onFalse(new InstantCommand(() -> intake.stopLift()));
+	}
+
+	public void periodic() {
+		SmartDashboard.putBoolean("Auto Aligned", DriveCommands.autoAligned);
+		SmartDashboard.putBoolean("Hub Active", isHubActive());
+		SmartDashboard.putNumber("Time Until Shift", timeUntilShift());
+	}
+
+	public int timeUntilShift() {
+		double matchTime = DriverStation.getMatchTime();
+		if (matchTime > 130) {
+			return -1; // N/A (Transition)
+		} else if (matchTime > 105) {
+			return (int) (matchTime - 105);
+		} else if (matchTime > 80) {
+			return (int) (matchTime - 80);
+		} else if (matchTime > 55) {
+			return (int) (matchTime - 55);
+		} else if (matchTime > 30) {
+			return (int) (matchTime - 30);
+		} else {
+			return -1; // N/A (Endgame)
+		}
+	}
+
+	public boolean isHubActive() {
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+
+		// No alliance = can't be enabled
+		if (alliance.isEmpty())
+			return false;
+
+		// Hub is always active in Auto
+		if (DriverStation.isAutonomousEnabled())
+			return true;
+
+		// Not in teleop = no hub
+		if (!DriverStation.isTeleopEnabled())
+			return false;
+
+		double matchTime = DriverStation.getMatchTime();
+		String gameData = DriverStation.getGameSpecificMessage();
+
+		// No data yet (early teleop) — assume active
+		if (gameData.isEmpty())
+			return true;
+
+		boolean redInactiveFirst = false;
+		switch (gameData.charAt(0)) {
+			case 'R' -> redInactiveFirst = true;
+			case 'B' -> redInactiveFirst = false;
+			default -> {
+				return true;
+			} // corrupt data, assume active
+		}
+
+		// Shift 1 is active for Blue if Red won auto, or Red if Blue won auto
+		boolean shift1Active = switch (alliance.get()) {
+			case Red -> !redInactiveFirst;
+			case Blue -> redInactiveFirst;
+		};
+
+		if (matchTime > 130)
+			return true; // Transition shift — always active
+		else if (matchTime > 105)
+			return shift1Active; // Shift 1
+		else if (matchTime > 80)
+			return !shift1Active; // Shift 2
+		else if (matchTime > 55)
+			return shift1Active; // Shift 3
+		else if (matchTime > 30)
+			return !shift1Active; // Shift 4
+		else
+			return true; // End game — always active
 	}
 
 	/**

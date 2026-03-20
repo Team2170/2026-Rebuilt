@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants.ShooterConstants;
 import frc.robot.constants.Constants.VisionConstants;
 
@@ -16,17 +17,24 @@ import frc.robot.constants.Constants.VisionConstants;
  * Implementation of ClimberIO for real hardware, using a TalonFX motor
  * controller.
  */
-public class ShooterIOReal implements ShooterIO {
+public class ShooterIOTalonFX implements ShooterIO {
 	private TalonFX BackMasterMotor;
 	private TalonFX BackFollowerMotor;
-	private TalonFX FrontMotor;
+	private TalonFX FeedMotor;
 
 	public static final double BACK_GEAR_RATIO = 1;
 	public static final double FRONT_GEAR_RATIO = 3;
+	public double ty = 0;
+	public double tagDistance = 0;
+	public double radians = Units.degreesToRadians(VisionConstants.degreesOffset + ty);
+	public double cosine = Math.cos(radians);
 
 	private VelocityVoltage request;
 
 	private boolean motorsOff;
+
+	private double distanceToTarget;
+	private double rps;
 
 	/**
 	 * Constructs a ClimberIOReal instance with the given configuration.
@@ -34,10 +42,10 @@ public class ShooterIOReal implements ShooterIO {
 	 * @param cfg The ClimberConfiguration object containing configuration
 	 *            parameters.
 	 */
-	public ShooterIOReal() {
+	public ShooterIOTalonFX() {
 		BackMasterMotor = new TalonFX(ShooterConstants.ShooterBackMasterMotorId);
 		BackFollowerMotor = new TalonFX(ShooterConstants.ShooterBackFollowerMotorId);
-		FrontMotor = new TalonFX(ShooterConstants.ShooterFrontMotorId);
+		FeedMotor = new TalonFX(ShooterConstants.ShooterFeedMotorId);
 
 		configMotors();
 
@@ -53,10 +61,17 @@ public class ShooterIOReal implements ShooterIO {
 		BackMasterMotor.getConfigurator().apply(internalConfig);
 
 		internalConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-		internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+		internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Coast);
+
 		internalConfig.Feedback.withSensorToMechanismRatio(BACK_GEAR_RATIO);
+
 		internalConfig.CurrentLimits.withStatorCurrentLimit(60);
 		internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
+		internalConfig.CurrentLimits.withSupplyCurrentLimit(45);
+		internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
+
+        internalConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25;
+
 		internalConfig.Slot0.kP = 0.1; // Responds to velocity error
 		internalConfig.Slot0.kI = 0.001; // Integrates accumulated error (Not rlly needed)
 		internalConfig.Slot0.kD = 0.02; // Dampens oscillation on sudden load
@@ -65,12 +80,14 @@ public class ShooterIOReal implements ShooterIO {
 		internalConfig.Slot0.kA = 0.001; // Acceleration feedforward
 
 		BackMasterMotor.getConfigurator().apply(internalConfig);
+
 		BackFollowerMotor.getConfigurator().apply(internalConfig);
 		BackFollowerMotor.setControl(new Follower(BackFollowerMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
 		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
 		internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_RATIO);
-		FrontMotor.getConfigurator().apply(internalConfig);
+
+		FeedMotor.getConfigurator().apply(internalConfig);
 	}
 
 	public void updateInputs(ShooterIOInputs inputs) {
@@ -86,17 +103,32 @@ public class ShooterIOReal implements ShooterIO {
 		inputs.BackFollowerMotorControlMode = BackFollowerMotor.getControlMode().getValue();
 		inputs.BackFollowerMotorPositionError = BackFollowerMotor.getClosedLoopError().getValueAsDouble();
 
-		inputs.FrontMotorTorqueCurrentAmps = FrontMotor.getTorqueCurrent().getValueAsDouble();
-		inputs.FrontMotorVelocityRotPerSec = FrontMotor.getVelocity().getValueAsDouble();
-		inputs.FrontMotorMotorConnected = FrontMotor.isConnected();
-		inputs.FrontMotorControlMode = FrontMotor.getControlMode().getValue();
-		inputs.FrontMotorPositionError = FrontMotor.getClosedLoopError().getValueAsDouble();
+		inputs.FeedMotorTorqueCurrentAmps = FeedMotor.getTorqueCurrent().getValueAsDouble();
+		inputs.FeedMotorVelocityRotPerSec = FeedMotor.getVelocity().getValueAsDouble();
+		inputs.FeedMotorMotorConnected = FeedMotor.isConnected();
+		inputs.FeedMotorControlMode = FeedMotor.getControlMode().getValue();
+		inputs.FeedMotorPositionError = FeedMotor.getClosedLoopError().getValueAsDouble();
+
+		inputs.distanceToTarget = this.distanceToTarget;
+		inputs.rps = this.rps;
+		inputs.ty = this.ty;
+		inputs.tagDistance = this.tagDistance;
+		inputs.radians = this.radians;
+		inputs.cosine = this.cosine;
+	}
+
+	public boolean atRPS() {
+		return BackMasterMotor.getVelocity().getValueAsDouble() >= rps - 1 && BackMasterMotor.getVelocity().getValueAsDouble() <= rps + 1;
 	}
 
 	public double calculateRPS(double tagDistance, double ty) {
-		double distanceToTarget = tagDistance / Math.cos(Units.degreesToRadians(VisionConstants.degreesOffset + ty));
-		double rps = 0.244898 * distanceToTarget + 30;
-		return rps;
+		this.ty = ty;
+		this.tagDistance = tagDistance;
+		this.radians = Units.degreesToRadians(VisionConstants.degreesOffset + ty);
+		this.cosine = Math.cos(radians);
+		this.distanceToTarget = tagDistance / this.cosine;
+		this.rps = (0.244898 * Units.metersToInches(this.distanceToTarget)) + 30;
+		return this.rps;
 	}
 
 	/**
@@ -106,14 +138,14 @@ public class ShooterIOReal implements ShooterIO {
 	 */
 	public void setShooterVelocityOut(double rps) {
 		motorsOff = false;
-		
+
 		BackMasterMotor.setControl(request.withVelocity(rps));
 		BackFollowerMotor.setControl(request.withVelocity(rps));
 	}
 
 	public void setFeedMotorVelocityOut(double rps) {
 		if (!motorsOff) {
-			FrontMotor.setControl(request.withVelocity(rps));
+			FeedMotor.setControl(request.withVelocity(rps));
 		}
 	}
 
@@ -122,6 +154,6 @@ public class ShooterIOReal implements ShooterIO {
 
 		BackFollowerMotor.stopMotor();
 		BackMasterMotor.stopMotor();
-		FrontMotor.stopMotor();
+		FeedMotor.stopMotor();
 	}
 }

@@ -76,11 +76,12 @@ public class Vision extends SubsystemBase {
     }
 
     public Rotation2d getTargetY(int cameraIndex) {
+        System.out.println("Camera " + cameraIndex + "\nty: " + inputs[cameraIndex].latestTargetObservation.ty());
         return inputs[cameraIndex].latestTargetObservation.ty();
     }
 
     public boolean hasTarget(int cameraIndex) {
-        return inputs[cameraIndex].tagIds.length > 0;
+        return inputs[cameraIndex].hasTarget; // uses tv instead of tagIds
     }
 
     @Override
@@ -214,15 +215,12 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Returns the distance to the nearest tag in meters for the given camera, or -1
-     * if no target.
+     * Returns the distance to the nearest tag in meters for the given camera
      */
     public double getTagDistance(int cameraIndex) {
-        if (!hasTarget(cameraIndex))
-            return -1.0;
         var observations = inputs[cameraIndex].poseObservations;
         if (observations.length == 0)
-            return -1.0;
+            return 100;
         return observations[observations.length - 1].averageTagDistance();
     }
 

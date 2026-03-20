@@ -36,6 +36,7 @@ public class VisionIOLimelight implements VisionIO {
     private final DoubleSubscriber latencySubscriber;
     private final DoubleSubscriber txSubscriber;
     private final DoubleSubscriber tySubscriber;
+    private final DoubleSubscriber tvSubscriber;
     private final DoubleArraySubscriber megatag1Subscriber;
     private final DoubleArraySubscriber megatag2Subscriber;
 
@@ -53,6 +54,7 @@ public class VisionIOLimelight implements VisionIO {
         latencySubscriber = table.getDoubleTopic("tl").subscribe(0.0);
         txSubscriber = table.getDoubleTopic("tx").subscribe(0.0);
         tySubscriber = table.getDoubleTopic("ty").subscribe(0.0);
+        tvSubscriber = table.getDoubleTopic("tv").subscribe(0.0);
         megatag1Subscriber = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
         megatag2Subscriber = table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
     }
@@ -61,6 +63,8 @@ public class VisionIOLimelight implements VisionIO {
     public void updateInputs(VisionIOInputs inputs) {
         // Update connection status based on whether an update has been seen in the last 250ms
         inputs.connected = ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
+
+        inputs.hasTarget = tvSubscriber.get() == 1.0;
 
         // Update target observation
         inputs.latestTargetObservation = new TargetObservation(
