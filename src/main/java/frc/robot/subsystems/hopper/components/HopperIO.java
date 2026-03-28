@@ -4,8 +4,6 @@ import org.littletonrobotics.junction.AutoLog;
 
 import com.ctre.phoenix6.signals.ControlModeValue;
 
-import frc.robot.subsystems.intake.components.IntakeIO.IntakeIOInputs;
-
 public interface HopperIO {
     @AutoLog
     public static class HopperIOInputs {
@@ -29,9 +27,10 @@ public interface HopperIO {
      *
      * @param inputs The ShooterIOInputs object to be updated.
      */
-    public default void updateInputs(IntakeIOInputs inputs) {
+    public default void updateInputs(HopperIOInputs inputs) {
     }
 
+    //TODO Power or position better?
     public default void setHopperPower(double percent) {
     }
 

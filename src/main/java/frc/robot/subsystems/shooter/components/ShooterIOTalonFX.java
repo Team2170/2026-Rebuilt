@@ -140,7 +140,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 		motorsOff = false;
 
 		BackMasterMotor.setControl(request.withVelocity(rps));
-		BackFollowerMotor.setControl(request.withVelocity(rps));
+		// BackFollowerMotor.setControl(request.withVelocity(rps));
 	}
 
 	public void setFeedMotorVelocityOut(double rps) {
@@ -152,7 +152,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	public void stop() {
 		motorsOff = true;
 
-		BackFollowerMotor.stopMotor();
+		// BackFollowerMotor.stopMotor();
 		BackMasterMotor.stopMotor();
 		FeedMotor.stopMotor();
 	}

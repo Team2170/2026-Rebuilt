@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.constants.Constants.HopperConstants;
+import frc.robot.subsystems.hopper.components.HopperIO.HopperIOInputs;
 
 public class HopperIOReal {
     private TalonFX MasterHopperMotor;
@@ -36,17 +37,39 @@ public class HopperIOReal {
         internalConfig.CurrentLimits.withStatorCurrentLimit(40);
         internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
         internalConfig.CurrentLimits.withSupplyCurrentLimit(30);
-        internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);  
-        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.5; //TODO Setup
+        internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
+        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.5; // TODO Setup
         internalConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.5; //TODO Setup
+        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.5; // TODO Setup
         internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         MasterHopperMotor.getConfigurator().apply(internalConfig);
 
-        FollowerHopperMotor.setControl(new Follower(MasterHopperMotor.getDeviceID(), MotorAlignmentValue.Opposed)); //TODO Setup
-		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+        FollowerHopperMotor.setControl(new Follower(MasterHopperMotor.getDeviceID(), MotorAlignmentValue.Opposed)); // TODO Setup
+        internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+    }
 
-        
+    public void updateInputs(HopperIOInputs inputs) {
+        inputs.HopperPosition = MasterHopperMotor.getPosition().getValueAsDouble();
+
+        inputs.MasterHopperMotorTorqueCurrentAmps = MasterHopperMotor.getTorqueCurrent().getValueAsDouble();
+        inputs.MasterHopperMotorVelocityRotPerSec = MasterHopperMotor.getVelocity().getValueAsDouble();
+        inputs.MasterHopperMotorConnected = MasterHopperMotor.isConnected();
+        inputs.MasterHopperMotorControlMode = MasterHopperMotor.getControlMode().getValue();
+        inputs.MasterHopperMotorPositionError = MasterHopperMotor.getClosedLoopError().getValueAsDouble();
+
+        inputs.FollowerHopperMotorTorqueCurrentAmps = FollowerHopperMotor.getTorqueCurrent().getValueAsDouble();
+        inputs.FollowerHopperMotorVelocityRotPerSec = FollowerHopperMotor.getVelocity().getValueAsDouble();
+        inputs.FollowerHopperMotorConnected = FollowerHopperMotor.isConnected();
+        inputs.FollowerHopperMotorControlMode = FollowerHopperMotor.getControlMode().getValue();
+        inputs.FollowerHopperMotorPositionError = FollowerHopperMotor.getClosedLoopError().getValueAsDouble();
+    }
+
+    public void setHopperPower(double percent) {
+        MasterHopperMotor.setControl(request.withOutput(percent));
+    }
+
+    public void stopHopper() {
+        MasterHopperMotor.setControl(request.withOutput(0));
     }
 }
