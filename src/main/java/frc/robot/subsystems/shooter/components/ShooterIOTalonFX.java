@@ -9,7 +9,6 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants.ShooterConstants;
 import frc.robot.constants.Constants.VisionConstants;
 
@@ -21,7 +20,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 	private TalonFX BackMasterMotor;
 	private TalonFX BackFollowerMotor;
 	private TalonFX FeedMotor;
-
+	//TODO Add in roller motors and double check gear ratios for feed and roller motors and check PIDs for shooter motors
+	
 	public static final double BACK_GEAR_RATIO = 1;
 	public static final double FRONT_GEAR_RATIO = 3;
 	public double ty = 0;

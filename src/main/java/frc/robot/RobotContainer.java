@@ -271,6 +271,8 @@ public class RobotContainer {
 
 		//TODO Add separate rev to speed motor
 
+        //TODO While shooting, retract hopper
+
 		operatorController.y().onTrue(new ParallelCommandGroup(
 				new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
 						new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))

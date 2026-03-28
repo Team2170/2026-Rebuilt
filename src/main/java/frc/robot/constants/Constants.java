@@ -43,6 +43,11 @@ public class Constants {
         public static final int IntakingMotorID = 17;
     }
 
+    public static class HopperConstants { //TODO Fix
+        public static final int MasterHopperMotorID = 20;
+        public static final int FollowerHopperMotorID = 21;
+    }
+
     public static class VisionConstants {
         public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
                 .loadField(AprilTagFields.k2026RebuiltWelded);
