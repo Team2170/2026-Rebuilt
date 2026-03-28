@@ -80,9 +80,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 		internalConfig.Slot0.kA = 0.001; // Acceleration feedforward
 
 		BackMasterMotor.getConfigurator().apply(internalConfig);
-
 		BackFollowerMotor.getConfigurator().apply(internalConfig);
-		BackFollowerMotor.setControl(new Follower(BackFollowerMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+		
+		BackFollowerMotor.setControl(new Follower(BackMasterMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
 		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
 		internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_RATIO);

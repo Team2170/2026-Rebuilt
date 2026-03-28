@@ -2,9 +2,12 @@ package frc.robot.subsystems.hopper.components;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.constants.Constants.HopperConstants;
 
 public class HopperIOReal {
@@ -18,20 +21,32 @@ public class HopperIOReal {
         FollowerHopperMotor = new TalonFX(HopperConstants.FollowerHopperMotorID);
         configMotors();
 
-        request = new DutyCycleOut(0), withEnableFOC(true);
+        request = new DutyCycleOut(0).withEnableFOC(true);
     }
 
     public void configMotors() {
-        MasterHopperMotor.getConfigurator().apply(new TalonFXConfiguration());
-        FollowerHopperMotor.getConfigurator().apply(new TalonFXConfiguration());
+        TalonFXConfiguration internalConfig = new TalonFXConfiguration();
+        MasterHopperMotor.getConfigurator().apply(internalConfig);
+        FollowerHopperMotor.getConfigurator().apply(internalConfig);
 
-        MasterHopperMotor.setInverted(false);
-        MasterHopperMotor.setNeutralMode(TalonFX.NeutralMode.Coast);
-        MasterHopperMotor.getSensorCollection().setQuadraturePosition(0, 0);
-        MasterHopperMotor.getSensorCollection().setQuadratureVelocity(0, 0);
-        MasterHopperMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
-        MasterHopperMotor.getSensorCollection().setIntegratedSensorVelocity(0, 0);
+        // TODO Setup
+        internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+        internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+        internalConfig.Feedback.withSensorToMechanismRatio(HOPPER_MOTOR_RATIO);
+        internalConfig.CurrentLimits.withStatorCurrentLimit(40);
+        internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
+        internalConfig.CurrentLimits.withSupplyCurrentLimit(30);
+        internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);  
+        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.5; //TODO Setup
+        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.5; //TODO Setup
+        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-        FollowerHopperMotor.follow(MasterHopperMotor);
+        MasterHopperMotor.getConfigurator().apply(internalConfig);
+
+        FollowerHopperMotor.setControl(new Follower(MasterHopperMotor.getDeviceID(), MotorAlignmentValue.Opposed)); //TODO Setup
+		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+
+        
     }
 }
