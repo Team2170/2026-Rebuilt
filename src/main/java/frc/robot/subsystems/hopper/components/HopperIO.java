@@ -20,6 +20,13 @@ public interface HopperIO {
         public boolean FollowerHopperMotorConnected = false;
         public ControlModeValue FollowerHopperMotorControlMode = ControlModeValue.DisabledOutput;
         public double FollowerHopperMotorPositionError = -1;
+
+        public double IntakingMotorPosition = -1;
+        public double IntakingMotorTorqueCurrentAmps = -1;
+        public double IntakingMotorVelocityRotPerSec = -1;
+        public boolean IntakingMotorMotorConnected = false;
+        public ControlModeValue IntakingMotorControlMode = ControlModeValue.DisabledOutput;
+        public double IntakingMotorPositionError = -1;
     }
 
     /**
@@ -30,11 +37,22 @@ public interface HopperIO {
     public default void updateInputs(HopperIOInputs inputs) {
     }
 
-    //TODO Power or position better?
+    // TODO Power or position better?
     public default void setHopperPower(double percent) {
     }
 
-     /** Stops the shooter motor. */
-     public default void stopHopper() {
-     }
+    /**
+     * Sets the intake motor output as a percentage of total power.
+     *
+     * @param percent The desired power percentage (between -1.0 and 1.0).
+     */
+    // public default void setIntakePower(double percent) {
+    // }
+
+    /** Stops the shooter motor. */
+    public default void stopHopper() {
+    }
+
+    // public default void stopIntake() {
+    // }
 }

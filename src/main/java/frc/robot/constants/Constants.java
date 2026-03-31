@@ -38,14 +38,10 @@ public class Constants {
         public static final double FeedMotorRPS = 30;
     }
 
-    public static class IntakeConstants {
-        public static final int IntakeLiftMotorID = 18;
-        public static final int IntakingMotorID = 17;
-    }
-
-    public static class HopperConstants { //TODO Fix
-        public static final int MasterHopperMotorID = 20;
-        public static final int FollowerHopperMotorID = 21;
+    public static class HopperConstants {
+        public static final int MasterHopperMotorID = 14;
+        public static final int FollowerHopperMotorID = 13;
+        public static final int IntakingMotorID = 12;
     }
 
     public static class VisionConstants {

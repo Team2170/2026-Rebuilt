@@ -49,7 +49,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 		configMotors();
 
-		request = new VelocityVoltage(0).withEnableFOC(true);
+		request = new VelocityVoltage(0);
 
 		motorsOff = true;
 	}
@@ -82,7 +82,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 		BackMasterMotor.getConfigurator().apply(internalConfig);
 		BackFollowerMotor.getConfigurator().apply(internalConfig);
 		
-		BackFollowerMotor.setControl(new Follower(BackMasterMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+		BackFollowerMotor.setControl(new Follower(BackMasterMotor.getDeviceID(), MotorAlignmentValue.Aligned));
 
 		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
 		internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_RATIO);

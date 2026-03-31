@@ -230,7 +230,8 @@ public class Vision extends SubsystemBase {
     }
 
     @FunctionalInterface
-    public interface VisionConsumer {
+        public interface VisionConsumer {
+
         void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
     }
 }
