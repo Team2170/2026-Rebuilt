@@ -9,7 +9,6 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants.ShooterConstants;
 import frc.robot.constants.Constants.VisionConstants;
 
@@ -21,7 +20,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 	private TalonFX BackMasterMotor;
 	private TalonFX BackFollowerMotor;
 	private TalonFX FeedMotor;
-
+	//TODO Add in roller motors and double check gear ratios for feed and roller motors and check PIDs for shooter motors
+	
 	public static final double BACK_GEAR_RATIO = 1;
 	public static final double FRONT_GEAR_RATIO = 3;
 	public double ty = 0;
@@ -49,7 +49,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 		configMotors();
 
-		request = new VelocityVoltage(0).withEnableFOC(true);
+		request = new VelocityVoltage(0);
 
 		motorsOff = true;
 	}
@@ -80,9 +80,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 		internalConfig.Slot0.kA = 0.001; // Acceleration feedforward
 
 		BackMasterMotor.getConfigurator().apply(internalConfig);
-
 		BackFollowerMotor.getConfigurator().apply(internalConfig);
-		BackFollowerMotor.setControl(new Follower(BackFollowerMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+		
+		BackFollowerMotor.setControl(new Follower(BackMasterMotor.getDeviceID(), MotorAlignmentValue.Aligned));
 
 		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
 		internalConfig.Feedback.withSensorToMechanismRatio(FRONT_GEAR_RATIO);
@@ -140,7 +140,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 		motorsOff = false;
 
 		BackMasterMotor.setControl(request.withVelocity(rps));
-		BackFollowerMotor.setControl(request.withVelocity(rps));
+		// BackFollowerMotor.setControl(request.withVelocity(rps));
 	}
 
 	public void setFeedMotorVelocityOut(double rps) {
@@ -152,7 +152,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 	public void stop() {
 		motorsOff = true;
 
-		BackFollowerMotor.stopMotor();
+		// BackFollowerMotor.stopMotor();
 		BackMasterMotor.stopMotor();
 		FeedMotor.stopMotor();
 	}

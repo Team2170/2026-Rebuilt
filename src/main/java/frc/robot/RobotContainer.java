@@ -15,7 +15,6 @@ package frc.robot;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -38,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -54,8 +54,8 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.components.IntakeIOReal;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.components.HopperIOReal;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.components.ShooterIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
@@ -71,14 +71,11 @@ import frc.robot.subsystems.vision.components.VisionIOLimelight;
  * button mappings) should be declared here.
  */
 public class RobotContainer {
-	// Subsystems
 	private final Vision vision;
 	private final Drive drive;
-	private final Intake intake;
+	private final Hopper hopper;
 	private final Shooter shooter;
 	private SwerveDriveSimulation driveSimulation = null;
-
-	// Controller
 
 	public final CommandXboxController driverController = new CommandXboxController(0);
 
@@ -107,7 +104,7 @@ public class RobotContainer {
 						new VisionIOLimelight(VisionConstants.rightCameraName, drive::getRotation));
 
 				shooter = new Shooter("Shooter", new ShooterIOTalonFX());
-				intake = new Intake("Intake", new IntakeIOReal());
+				hopper = new Hopper("Hopper", new HopperIOReal());
 				break;
 
 			case SIM:
@@ -124,7 +121,7 @@ public class RobotContainer {
 						driveSimulation::setSimulationWorldPose);
 
 				vision = null; // Vision is not supported in simulation yet
-				intake = null;
+				hopper = null;
 				shooter = null;
 				break;
 
@@ -146,7 +143,7 @@ public class RobotContainer {
 				vision = new Vision(drive, new VisionIO() {
 				}, new VisionIO() {
 				});
-				intake = null;
+				hopper = null;
 				shooter = null;
 				break;
 		}
@@ -182,22 +179,18 @@ public class RobotContainer {
 						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))
 				.andThen(new WaitCommand(5)).andThen(new InstantCommand(() -> shooter.stop())));
 
-		autoChooser.addOption("PLEASEEEEEEEEE", DriveCommands.joystickDrive(drive, new DoubleSupplier() {
-			@Override
-			public double getAsDouble() {
-				return 0;
-			}
-		}, new DoubleSupplier() {
-			@Override
-			public double getAsDouble() {
-				return -1;
-			}
-		}, new DoubleSupplier() {
-			@Override
-			public double getAsDouble() {
-				return 0;
-			}
-		}));
+		Command shootToHub = new ParallelCommandGroup(
+				new InstantCommand(
+						() -> shooter.setShooterVelocityOut(
+								vision.hasAnyTarget()
+										? shooter.calculateRPS(
+												vision.getTagDistance(vision.getBestCameraIndex()),
+												vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
+										: 50),
+						shooter),
+				new WaitCommand(1).andThen(new InstantCommand(
+						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))
+				.andThen(new WaitCommand(5)).andThen(new InstantCommand(() -> shooter.stop()));
 
 		try {
 			autoChooser.addOption("Potential Shoot?",
@@ -208,6 +201,8 @@ public class RobotContainer {
 											() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))));
 			autoChooser.addOption("To Middle", AutoBuilder.followPath(PathPlannerPath.fromPathFile("To Middle")));
 			autoChooser.addOption("RAHHHHHH", AutoBuilder.followPath(PathPlannerPath.fromPathFile("RAHHHHHH")));
+			autoChooser.addOption("A",
+					AutoBuilder.followPath(PathPlannerPath.fromPathFile("I Guess Bro")).andThen(shootToHub));
 		} catch (FileVersionException | IOException | ParseException e) {
 			DriverStation.reportError("Failed to load auto paths", e.getStackTrace());
 			e.printStackTrace();
@@ -255,38 +250,48 @@ public class RobotContainer {
 						new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 		driverController.a().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
 
-		operatorController.a().onTrue(
-				new ParallelCommandGroup(
-						new InstantCommand(
-								() -> shooter.setShooterVelocityOut(
-										vision.hasAnyTarget()
-												? shooter.calculateRPS(
-														vision.getTagDistance(vision.getBestCameraIndex()),
-														vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
-												: 50),
-								shooter),
-						new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
-								() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-				.onFalse(new InstantCommand(() -> shooter.stop()));
+		// operatorController.a().onTrue(
+		// 		new ParallelCommandGroup(
+		// 				new InstantCommand(
+		// 						() -> shooter.setShooterVelocityOut(
+		// 								vision.hasAnyTarget()
+		// 										? shooter.calculateRPS(
+		// 												vision.getTagDistance(vision.getBestCameraIndex()),
+		// 												vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
+		// 										: 50),
+		// 						shooter),
+		// 				new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
+		// 						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+		// 		.onFalse(new InstantCommand(() -> shooter.stop()));
 
-		//TODO Add separate rev to speed motor
+		// TODO Add separate rev to speed motor
 
-		operatorController.y().onTrue(new ParallelCommandGroup(
-				new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
-						new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-				.onFalse(new InstantCommand(() -> shooter.stop()));
+		// TODO While shooting, retract hopper
 
-		operatorController.rightBumper().onTrue(new InstantCommand(() -> intake.setIntakePower(-0.5)))
-				.onFalse(new InstantCommand(() -> intake.stopIntake()));
+		// operatorController.y().onTrue(new ParallelCommandGroup(
+		// 		new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
+		// 				new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+		// 		.onFalse(new InstantCommand(() -> shooter.stop()));
 
-		operatorController.b().onTrue(new InstantCommand(() -> intake.setIntakePower(0.85)))
-				.onFalse(new InstantCommand(() -> intake.stopIntake()));
+		// // operatorController.rightBumper().onTrue(new InstantCommand(() ->
+		// hopper.setIntakePower(-0.5)))
+		// .onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		operatorController.povUp().onTrue(new InstantCommand(() -> intake.setLiftPower(0.2)))
-				.onFalse(new InstantCommand(() -> intake.stopLift()));
+		// // operatorController.b().onTrue(new InstantCommand(() ->
+		// hopper.setIntakePower(0.65)))
+		// .onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		operatorController.povDown().onTrue(new InstantCommand(() -> intake.setLiftPower(-0.2)))
-				.onFalse(new InstantCommand(() -> intake.stopLift()));
+		// // operatorController.povUp()
+		// .onTrue(new ParallelCommandGroup(new InstantCommand(() ->
+		// hopper.setHopperPower(0.2)),
+		// new InstantCommand(() -> hopper.setIntakePower(0.2))))
+		// .onFalse(new ParallelCommandGroup(new InstantCommand(() ->
+		// hopper.stopHopper()),
+		// new InstantCommand(() -> hopper.stopIntake())));
+
+		// operatorController.povDown().onTrue(new InstantCommand(() ->
+		// hopper.setHopperPower(-0.2)))
+		// .onFalse(new InstantCommand(() -> hopper.stopHopper()));
 	}
 
 	public void periodic() {
