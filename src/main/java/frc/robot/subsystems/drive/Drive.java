@@ -12,7 +12,8 @@
 // GNU General Public License for more details.
 
 package frc.robot.subsystems.drive;
-
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Kilograms;
@@ -54,6 +55,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -192,6 +195,29 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
         SmartDashboard.putData("Field", field2d);
+
+        SmartDashboard.putData("Swerve Drive", new Sendable() {
+    @Override
+    public void initSendable(SendableBuilder builder) {//widget for module direction in Elastic
+        builder.setSmartDashboardType("SwerveDrive");
+
+        builder.addDoubleProperty("Front Left Angle", () -> modules[0].getState().speedMetersPerSecond, null);
+        builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getState().speedMetersPerSecond, null);
+
+     
+
+        builder.addDoubleProperty("Front Right Angle", () -> modules[1].getState().angle.getRadians(), null);
+        builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Back Left Angle", () -> modules[2].getState().angle.getRadians(), null);
+        builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Back Right Angle", () -> modules[3].getState().angle.getRadians(), null);
+        builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getState().speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Robot Angle", () -> getRotation().getRadians(), null);
+    }
+});
     }
 
     @Override
@@ -282,6 +308,9 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     public void runCharacterization(double output) {
         for (int i = 0; i < 4; i++) {
             modules[i].runCharacterization(output);
+
+
+
         }
     }
 

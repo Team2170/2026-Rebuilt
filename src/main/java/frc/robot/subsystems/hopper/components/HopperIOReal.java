@@ -1,6 +1,8 @@
 package frc.robot.subsystems.hopper.components;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -20,6 +22,7 @@ public class HopperIOReal implements HopperIO {
     public static final double HOPPER_MOTOR_RATIO = 1;
     private DutyCycleOut request;
     private PositionDutyCycle requestPosition;
+    
 
     public HopperIOReal() {
         MasterHopperMotor = new TalonFX(HopperConstants.MasterHopperMotorID);
@@ -33,6 +36,8 @@ public class HopperIOReal implements HopperIO {
 
     public void configMotors() {
         TalonFXConfiguration internalConfig = new TalonFXConfiguration();
+        MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs();
+        Slot0Configs slot0Configs = new Slot0Configs();
         MasterHopperMotor.getConfigurator().apply(internalConfig);
         FollowerHopperMotor.getConfigurator().apply(internalConfig);
         // IntakingMotor.getConfigurator().apply(internalConfig);
@@ -63,6 +68,16 @@ public class HopperIOReal implements HopperIO {
         internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
 
         // IntakingMotor.getConfigurator().apply(internalConfig);
+
+        //motiom magic configs
+        /*slot0Configs.kA = HopperConstants.motionMagickA;//acceleration
+        slot0Configs.k = HopperConstants.motionMagickA;
+        slot0Configs.kA = HopperConstants.motionMagickA;
+        slot0Configs.kA = HopperConstants.motionMagickA;
+        slot0Configs.kA = HopperConstants.motionMagickA;
+        slot0Configs.kA = HopperConstants.motionMagickA;
+        slot0Configs.kA = HopperConstants.motionMagickA;
+         */
     }
 
     public void updateInputs(HopperIOInputs inputs) {

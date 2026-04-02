@@ -42,6 +42,14 @@ public class Constants {
         public static final int MasterHopperMotorID = 14;
         public static final int FollowerHopperMotorID = 13;
         public static final int IntakingMotorID = 12;
+        
+        //motion magic
+        public static final int motionMagickA = 0;
+        public static final int motionMagickS = 0;
+        public static final int motionMagickV = 0;
+        public static final int motionMagickP = 0;
+        public static final int motionMagickI = 0;
+        public static final int motionMagickD = 0;
     }
 
     public static class VisionConstants {
