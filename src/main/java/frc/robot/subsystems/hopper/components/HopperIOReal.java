@@ -1,6 +1,5 @@
 package frc.robot.subsystems.hopper.components;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -9,7 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
 
 import frc.robot.constants.Constants.HopperConstants;
 
@@ -22,7 +21,7 @@ public class HopperIOReal implements HopperIO {
     public static final double HOPPER_MOTOR_RATIO = 1;
     private DutyCycleOut request;
     private PositionDutyCycle requestPosition;
-    private MotionMagicVoltage hopperMotionMagicVoltage;
+    
 
     public HopperIOReal() {
         MasterHopperMotor = new TalonFX(HopperConstants.MasterHopperMotorID);
@@ -33,7 +32,7 @@ public class HopperIOReal implements HopperIO {
         request = new DutyCycleOut(0);
         requestPosition = new PositionDutyCycle(1);
 
-        hopperMotionMagicVoltage = new MotionMagicVoltage(0);
+        
     }
 
     public void configMotors() {
@@ -91,13 +90,13 @@ public class HopperIOReal implements HopperIO {
         inputs.MasterHopperMotorControlMode = MasterHopperMotor.getControlMode().getValue();
         inputs.MasterHopperMotorPositionError = MasterHopperMotor.getClosedLoopError().getValueAsDouble();
 
-        /*
+        
         inputs.FollowerHopperMotorTorqueCurrentAmps = FollowerHopperMotor.getTorqueCurrent().getValueAsDouble();
         inputs.FollowerHopperMotorVelocityRotPerSec = FollowerHopperMotor.getVelocity().getValueAsDouble();
         inputs.FollowerHopperMotorConnected = FollowerHopperMotor.isConnected();
         inputs.FollowerHopperMotorControlMode = FollowerHopperMotor.getControlMode().getValue();
         inputs.FollowerHopperMotorPositionError = FollowerHopperMotor.getClosedLoopError().getValueAsDouble();
-        */
+        
     }
 
 

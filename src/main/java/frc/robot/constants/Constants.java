@@ -46,9 +46,7 @@ public class Constants {
 
     public static class IntakeConstants {
         //Change these placeholders
-        public static final int MasterIntakeMotorID = 0;
-        public static final int FollowerIntakeMotorID = 0;
-        public static final int IntakeRollerMotorID = 0;
+        public static final int IntakeMotorID = 0;
 
     }
 

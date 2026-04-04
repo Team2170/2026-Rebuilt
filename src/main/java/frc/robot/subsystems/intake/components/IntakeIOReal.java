@@ -2,28 +2,23 @@ package frc.robot.subsystems.intake.components;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.constants.Constants.IntakeConstants;
 
-public class IntakeIOReal {
+public class IntakeIOReal implements IntakeIO{
     private TalonFX IntakeMotor;
 
     private DutyCycleOut request;
-    private PositionDutyCycle requestPosition;
 
     public IntakeIOReal() {
-        IntakeMotor = new TalonFX(IntakeConstants.IntakeRollerMotorID);
+        IntakeMotor = new TalonFX(IntakeConstants.IntakeMotorID);
 
         configMotors();
 
         request = new DutyCycleOut(0);
-        requestPosition = new PositionDutyCycle(1);
     }
 
     public void configMotors() {
@@ -46,11 +41,19 @@ public class IntakeIOReal {
 
     }
 
-    public void setIntakeRollerPower(double percent) {
+    public void updateInputs(IntakeIOInputs inputs) {
+        inputs.IntakeMotorTorqueCurrentAmps = IntakeMotor.getTorqueCurrent().getValueAsDouble();
+        inputs.IntakeMotorVelocityRotPerSec = IntakeMotor.getVelocity().getValueAsDouble();
+        inputs.IntakeMotorConnected = IntakeMotor.isConnected();
+        inputs.IntakeMotorControlMode = IntakeMotor.getControlMode().getValue();
+        inputs.IntakeMotorPositionError = IntakeMotor.getClosedLoopError().getValueAsDouble();
+    }
+
+    public void setIntakePower(double percent) {
         IntakeMotor.setControl(request.withOutput(percent));
     }
 
-    public void stopIntakeRoller() {
+    public void stopIntake() {
         IntakeMotor.setControl(request.withOutput(0));
     }
     

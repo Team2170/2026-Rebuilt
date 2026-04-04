@@ -131,7 +131,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     private final SysIdRoutine sysId;
     private final Alert gyroDisconnectedAlert = new Alert("Disconnected gyro, using kinematics as fallback.",
             AlertType.kError);
-    private final SwerveDriverOdometry odometer = new SwerveDriveOdometry(Constants., getRotation(), getModulePositions())
+    private final SwerveDriverOdometry odometer = new SwerveDriveOdometry(Constants., getRotation(), getModulePositions());
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
     private Rotation2d rawGyroRotation = new Rotation2d();
     private final SwerveModulePosition[] lastModulePositions = // For delta tracking
