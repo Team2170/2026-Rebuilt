@@ -79,6 +79,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 		internalConfig.Slot0.kS = 0.24; // Static friction offset (gets motor moving)
 		internalConfig.Slot0.kA = 0.001; // Acceleration feedforward
 
+		internalConfig.MotorOutput.PeakReverseDutyCycle = 0;
+
 		BackMasterMotor.getConfigurator().apply(internalConfig);
 		BackFollowerMotor.getConfigurator().apply(internalConfig);
 		

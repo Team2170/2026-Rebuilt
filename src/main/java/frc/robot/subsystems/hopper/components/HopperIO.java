@@ -41,6 +41,10 @@ public interface HopperIO {
     public default void setHopperPower(double percent) {
     }
 
+    public void extendHopper();
+
+    public void retractHopper();
+
     /**
      * Sets the intake motor output as a percentage of total power.
      *

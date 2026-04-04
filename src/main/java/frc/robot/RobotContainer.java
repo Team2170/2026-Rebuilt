@@ -23,6 +23,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 
@@ -208,6 +210,28 @@ public class RobotContainer {
 			e.printStackTrace();
 		}
 
+		// TODO: if this doesn't work, add an event marker in pathplanner for shooting
+		try {
+
+			autoChooser.addOption("top to center and back",
+					AutoBuilder.followPath(PathPlannerPath.fromPathFile("top to center and back")).andThen(shootToHub));
+			autoChooser.addOption("middle to center and back", AutoBuilder
+					.followPath(PathPlannerPath.fromPathFile("middle to center and back")).andThen(shootToHub));
+			autoChooser.addOption("bottom to center and back", AutoBuilder
+					.followPath(PathPlannerPath.fromPathFile("bottom to center and back")).andThen(shootToHub));
+		} catch (FileVersionException | IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// TODO: add intake commands here too
+		NamedCommands.registerCommand("Start Intake", new InstantCommand(() -> {
+			hopper.extendHopper();
+		}));
+		NamedCommands.registerCommand("End Intake", new InstantCommand(() -> {
+			hopper.retractHopper();
+		}));
+
 		// Configure the button bindings
 		configureButtonBindings();
 	}
@@ -251,27 +275,29 @@ public class RobotContainer {
 		driverController.a().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
 
 		// operatorController.a().onTrue(
-		// 		new ParallelCommandGroup(
-		// 				new InstantCommand(
-		// 						() -> shooter.setShooterVelocityOut(
-		// 								vision.hasAnyTarget()
-		// 										? shooter.calculateRPS(
-		// 												vision.getTagDistance(vision.getBestCameraIndex()),
-		// 												vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
-		// 										: 50),
-		// 						shooter),
-		// 				new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
-		// 						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-		// 		.onFalse(new InstantCommand(() -> shooter.stop()));
+		// new ParallelCommandGroup(
+		// new InstantCommand(
+		// () -> shooter.setShooterVelocityOut(
+		// vision.hasAnyTarget()
+		// ? shooter.calculateRPS(
+		// vision.getTagDistance(vision.getBestCameraIndex()),
+		// vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
+		// : 50),
+		// shooter),
+		// new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
+		// () -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+		// .onFalse(new InstantCommand(() -> shooter.stop()));
 
 		// TODO Add separate rev to speed motor
 
 		// TODO While shooting, retract hopper
 
 		// operatorController.y().onTrue(new ParallelCommandGroup(
-		// 		new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
-		// 				new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-		// 		.onFalse(new InstantCommand(() -> shooter.stop()));
+		// new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new
+		// WaitCommand(1).andThen(
+		// new InstantCommand(() ->
+		// shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+		// .onFalse(new InstantCommand(() -> shooter.stop()));
 
 		// // operatorController.rightBumper().onTrue(new InstantCommand(() ->
 		// hopper.setIntakePower(-0.5)))

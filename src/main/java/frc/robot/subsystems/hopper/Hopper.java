@@ -30,6 +30,13 @@ public class Hopper extends SubsystemBase {
         io.setHopperPower(percent);
     }
 
+    public void extendHopper() {
+        io.extendHopper();
+    }
+
+    public void retractHopper() {
+        io.retractHopper();
+    }
     // public void setIntakePower(double percent) {
     //     io.setIntakePower(percent);
     // }
