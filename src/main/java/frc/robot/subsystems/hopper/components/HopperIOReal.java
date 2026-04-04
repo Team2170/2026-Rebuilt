@@ -16,7 +16,7 @@ import frc.robot.constants.Constants.HopperConstants;
 
 public class HopperIOReal implements HopperIO {
     private TalonFX MasterHopperMotor;
-    //private TalonFX FollowerHopperMotor;
+    private TalonFX FollowerHopperMotor;
     // private TalonFX IntakingMotor;
     public static final double INTAKE_MOTOR_RATIO = 12;
     public static final double HOPPER_MOTOR_RATIO = 1;
@@ -26,7 +26,7 @@ public class HopperIOReal implements HopperIO {
 
     public HopperIOReal() {
         MasterHopperMotor = new TalonFX(HopperConstants.MasterHopperMotorID);
-        //FollowerHopperMotor = new TalonFX(HopperConstants.FollowerHopperMotorID);
+        FollowerHopperMotor = new TalonFX(HopperConstants.FollowerHopperMotorID);
         // IntakingMotor = new TalonFX(HopperConstants.IntakingMotorID);
         configMotors();
 
@@ -40,7 +40,7 @@ public class HopperIOReal implements HopperIO {
         
         TalonFXConfiguration internalConfig = new TalonFXConfiguration();
         MasterHopperMotor.getConfigurator().apply(internalConfig);
-        //FollowerHopperMotor.getConfigurator().apply(internalConfig);
+        FollowerHopperMotor.getConfigurator().apply(internalConfig);
         // IntakingMotor.getConfigurator().apply(internalConfig);
 
         //Change these placeholders
@@ -64,8 +64,8 @@ public class HopperIOReal implements HopperIO {
         internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         MasterHopperMotor.getConfigurator().apply(internalConfig);
-        //FollowerHopperMotor.getConfigurator().apply(internalConfig);
-        //FollowerHopperMotor.setControl(new Follower(MasterHopperMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+        FollowerHopperMotor.getConfigurator().apply(internalConfig);
+        FollowerHopperMotor.setControl(new Follower(MasterHopperMotor.getDeviceID(), MotorAlignmentValue.Opposed));
         /*
         internalConfig = new TalonFXConfiguration();
 

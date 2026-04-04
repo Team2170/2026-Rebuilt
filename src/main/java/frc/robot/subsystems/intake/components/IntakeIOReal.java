@@ -12,17 +12,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.constants.Constants.IntakeConstants;
 
 public class IntakeIOReal {
-    private TalonFX IntakeRollerMotor;
-    private TalonFX MasterIntakeMotor;
-    private TalonFX FollowerIntakeMotor;
+    private TalonFX IntakeMotor;
 
     private DutyCycleOut request;
     private PositionDutyCycle requestPosition;
 
     public IntakeIOReal() {
-        IntakeRollerMotor = new TalonFX(IntakeConstants.IntakeRollerMotorID);
-        MasterIntakeMotor = new TalonFX(IntakeConstants.MasterIntakeMotorID);
-        FollowerIntakeMotor = new TalonFX(IntakeConstants.FollowerIntakeMotorID);
+        IntakeMotor = new TalonFX(IntakeConstants.IntakeRollerMotorID);
 
         configMotors();
 
@@ -32,9 +28,7 @@ public class IntakeIOReal {
 
     public void configMotors() {
         TalonFXConfiguration internalConfig = new TalonFXConfiguration();
-        IntakeRollerMotor.getConfigurator().apply(internalConfig);
-        MasterIntakeMotor.getConfigurator().apply(internalConfig);
-        FollowerIntakeMotor.getConfigurator().apply(internalConfig);
+        IntakeMotor.getConfigurator().apply(internalConfig);
 
         //Placeholder values
         internalConfig.Slot0.kP = 0.5;
@@ -58,29 +52,16 @@ public class IntakeIOReal {
         internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -15; 
         internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-        IntakeRollerMotor.getConfigurator().apply(internalConfig);
-        MasterIntakeMotor.getConfigurator().apply(internalConfig);
-        FollowerIntakeMotor.getConfigurator().apply(internalConfig);
-        FollowerIntakeMotor.setControl(new Follower(MasterIntakeMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+        IntakeMotor.getConfigurator().apply(internalConfig);
 
     }
 
     public void setIntakeRollerPower(double percent) {
-        IntakeRollerMotor.setControl(request.withOutput(percent));
+        IntakeMotor.setControl(request.withOutput(percent));
     }
 
     public void stopIntakeRoller() {
-        IntakeRollerMotor.setControl(request.withOutput(0));
-    }
-
-    //Values need to be changed when the robot can be tested
-    public void extendIntake() {
-        MasterIntakeMotor.setControl(requestPosition.withPosition(0));
-    }
-
-    //Values need to be changed when the robot can be tested
-    public void retractIntake() {
-        MasterIntakeMotor.setControl(requestPosition.withPosition(0));
+        IntakeMotor.setControl(request.withOutput(0));
     }
     
 }
