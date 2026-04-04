@@ -33,12 +33,6 @@ public class IntakeIOReal {
         //Placeholder values
         internalConfig.Slot0.kP = 0.5;
         internalConfig.Slot0.kV = 0.1;
-        
-        //Placeholder values
-        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0;
-        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
-        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         //Some of these values need to be changed
         internalConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
@@ -47,10 +41,6 @@ public class IntakeIOReal {
         internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
         internalConfig.CurrentLimits.withSupplyCurrentLimit(30);
         internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
-        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = -0.5;
-        internalConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -15; 
-        internalConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
         IntakeMotor.getConfigurator().apply(internalConfig);
 
