@@ -43,7 +43,6 @@ public class HopperIOReal implements HopperIO {
         FollowerHopperMotor.getConfigurator().apply(internalConfig);
         // IntakingMotor.getConfigurator().apply(internalConfig);
 
-        /* Keep this if the new code does not work
         //Change these placeholders
         internalConfig.Slot0.kP = 0.5;
         internalConfig.Slot0.kV = 0.1;
@@ -55,7 +54,7 @@ public class HopperIOReal implements HopperIO {
         internalConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
         internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
         internalConfig.Feedback.withSensorToMechanismRatio(HOPPER_MOTOR_RATIO);
-        internalConfig.CurrentLimits.withStatorCurrentLimit(40);
+        internalConfig.CurrentLimits.withStatorCurrentLimit(20);
         internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
         internalConfig.CurrentLimits.withSupplyCurrentLimit(30);
         internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
@@ -78,20 +77,7 @@ public class HopperIOReal implements HopperIO {
         internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
 
         // IntakingMotor.getConfigurator().apply(internalConfig);
-        */
-
-        internalConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-		internalConfig.MotorOutput.withNeutralMode(NeutralModeValue.Coast);
-
-        internalConfig.CurrentLimits.withStatorCurrentLimit(60);
-		internalConfig.CurrentLimits.withStatorCurrentLimitEnable(true);
-		internalConfig.CurrentLimits.withSupplyCurrentLimit(45);
-		internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
-
-        MasterHopperMotor.getConfigurator().apply(internalConfig);
-        FollowerHopperMotor.getConfigurator().apply(internalConfig);
-        MasterHopperMotor.setControl(new Follower(ShooterConstants.ShooterFeedMotorId, MotorAlignmentValue.Aligned));
-        FollowerHopperMotor.setControl(new Follower(ShooterConstants.ShooterFeedMotorId, MotorAlignmentValue.Opposed));
+        
         
     }
 
