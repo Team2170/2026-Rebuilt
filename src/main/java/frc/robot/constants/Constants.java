@@ -44,6 +44,12 @@ public class Constants {
         public static final int IntakingMotorID = 12;
     }
 
+    public static class IntakeConstants {
+        //Change these placeholders
+        public static final int IntakeMotorID = 0;
+
+    }
+
     public static class VisionConstants {
         public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout
                 .loadField(AprilTagFields.k2026RebuiltWelded);

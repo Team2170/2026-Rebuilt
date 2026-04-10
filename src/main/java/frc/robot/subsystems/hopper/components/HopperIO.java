@@ -53,6 +53,11 @@ public interface HopperIO {
     public default void stopHopper() {
     }
 
+    public default void extendHopper() {
+    }
+
+    public default void retractHopper() {
+    }
     // public default void stopIntake() {
     // }
 }

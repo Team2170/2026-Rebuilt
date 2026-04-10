@@ -38,6 +38,14 @@ public class Hopper extends SubsystemBase {
         io.stopHopper();
     }
 
+    public void extendHopper() {
+        io.extendHopper();
+    }
+
+    public void retractHopper() {
+        io.retractHopper();
+    }
+
     // public void stopIntake() {
     //     io.stopIntake();
     // }
