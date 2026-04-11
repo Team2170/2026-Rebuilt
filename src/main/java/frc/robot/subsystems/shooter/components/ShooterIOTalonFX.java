@@ -71,7 +71,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 		internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
 
         internalConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25;
-
+		//CHANGE THIS
 		internalConfig.Slot0.kP = 0.1; // Responds to velocity error
 		internalConfig.Slot0.kI = 0.001; // Integrates accumulated error (Not rlly needed)
 		internalConfig.Slot0.kD = 0.02; // Dampens oscillation on sudden load

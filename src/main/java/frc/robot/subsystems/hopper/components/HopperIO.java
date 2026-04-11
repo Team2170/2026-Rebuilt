@@ -46,13 +46,13 @@ public interface HopperIO {
      *
      * @param percent The desired power percentage (between -1.0 and 1.0).
      */
-    // public default void setIntakePower(double percent) {
-    // }
+     public default void setIntakePower(double percent) {
+    }
 
     /** Stops the shooter motor. */
     public default void stopHopper() {
     }
 
-    // public default void stopIntake() {
-    // }
+    public default void stopIntake() {
+    }
 }

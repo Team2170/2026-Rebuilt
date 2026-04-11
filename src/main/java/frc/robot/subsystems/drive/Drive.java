@@ -86,6 +86,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     private static final double ROBOT_MASS_KG = 39;
     private static final double ROBOT_MOI = 4.991;
     private static final double WHEEL_COF = 1;
+
+    private Pose2d lastVisionPose = new Pose2d();//Praneeth
+
+
+
     private static final RobotConfig PP_CONFIG = new RobotConfig(
             ROBOT_MASS_KG,
             ROBOT_MOI,
@@ -251,7 +256,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
 
-        field2d.getObject("VisionEstimate").setPose(poseEstimator.getEstimatedPosition());
+        Pose2d robotPose = getPose();
+
+        field2d.getObject("VisionEstimate").setPose(lastVisionPose);
+
+        //field2d.getObject("VisionEstimate").setPose(poseEstimator.getEstimatedPosition()); - commented out by Praneeth
     }
 
     /**
@@ -386,6 +395,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     /** Adds a new timestamped vision measurement. */
     @Override
     public void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
+        lastVisionPose = visionRobotPoseMeters;
         poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
     }
 

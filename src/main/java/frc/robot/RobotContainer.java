@@ -250,48 +250,53 @@ public class RobotContainer {
 						new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 		driverController.a().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
 
-		// operatorController.a().onTrue(
-		// 		new ParallelCommandGroup(
-		// 				new InstantCommand(
-		// 						() -> shooter.setShooterVelocityOut(
-		// 								vision.hasAnyTarget()
-		// 										? shooter.calculateRPS(
-		// 												vision.getTagDistance(vision.getBestCameraIndex()),
-		// 												vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
-		// 										: 50),
-		// 						shooter),
-		// 				new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
-		// 						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-		// 		.onFalse(new InstantCommand(() -> shooter.stop()));
+		operatorController.a().onTrue(
+				new ParallelCommandGroup(
+						new InstantCommand(
+								() -> shooter.setShooterVelocityOut(
+										vision.hasAnyTarget()
+												? shooter.calculateRPS(
+														vision.getTagDistance(vision.getBestCameraIndex()),
+														vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
+												: 50),
+								shooter),
+						new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
+								() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+				.onFalse(new InstantCommand(() -> shooter.stop()));
 
 		// TODO Add separate rev to speed motor
 
 		// TODO While shooting, retract hopper
 
-		// operatorController.y().onTrue(new ParallelCommandGroup(
-		// 		new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
-		// 				new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-		// 		.onFalse(new InstantCommand(() -> shooter.stop()));
+		operatorController.y().onTrue(new ParallelCommandGroup(
+				new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
+						new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
+				.onFalse(new InstantCommand(() -> shooter.stop()));
 
-		// // operatorController.rightBumper().onTrue(new InstantCommand(() ->
-		// hopper.setIntakePower(-0.5)))
-		// .onFalse(new InstantCommand(() -> hopper.stopIntake()));
+		operatorController.rightBumper().onTrue(new InstantCommand(() -> hopper.setIntakePower(-0.5)))
+				.onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		// // operatorController.b().onTrue(new InstantCommand(() ->
-		// hopper.setIntakePower(0.65)))
-		// .onFalse(new InstantCommand(() -> hopper.stopIntake()));
+		operatorController.b().onTrue(new InstantCommand(() -> hopper.setIntakePower(60)))
+				.onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		// // operatorController.povUp()
-		// .onTrue(new ParallelCommandGroup(new InstantCommand(() ->
-		// hopper.setHopperPower(0.2)),
-		// new InstantCommand(() -> hopper.setIntakePower(0.2))))
-		// .onFalse(new ParallelCommandGroup(new InstantCommand(() ->
-		// hopper.stopHopper()),
-		// new InstantCommand(() -> hopper.stopIntake())));
+		operatorController.leftBumper().onTrue(new InstantCommand(() -> hopper.setIntakePower(-60)))
+				.onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		// operatorController.povDown().onTrue(new InstantCommand(() ->
-		// hopper.setHopperPower(-0.2)))
-		// .onFalse(new InstantCommand(() -> hopper.stopHopper()));
+		
+		/* 
+		operatorController.povUp()
+				.onTrue(new ParallelCommandGroup(new InstantCommand(() -> hopper.setHopperPower(0.2)),
+						new InstantCommand(() -> hopper.setIntakePower(0.2))))
+				.onFalse(new ParallelCommandGroup(new InstantCommand(() -> hopper.stopHopper()),
+						new InstantCommand(() -> hopper.stopIntake())));
+		*/
+		operatorController.povUp().onTrue(new InstantCommand(() -> hopper.setHopperPower(-0.2)))
+				.onFalse(new InstantCommand(() -> hopper.stopHopper()));
+
+		operatorController.povDown().onTrue(new InstantCommand(() -> hopper.setHopperPower(0.2)))
+				.onFalse(new InstantCommand(() -> hopper.stopHopper()));
+
+			
 	}
 
 	public void periodic() {
@@ -300,7 +305,7 @@ public class RobotContainer {
 		SmartDashboard.putNumber("Time Until Shift", timeUntilShift());
 	}
 
-	public int timeUntilShift() {
+	public double timeUntilShift() {
 		double matchTime = DriverStation.getMatchTime();
 		if (matchTime > 130) {
 			return -1; // N/A (Transition)
