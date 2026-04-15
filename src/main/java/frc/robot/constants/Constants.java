@@ -86,4 +86,19 @@ public class Constants {
         public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
         public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY; // No rotation data available
     }
+
+    public static class ClimberConstants{
+        //Adjust these values later
+        public static int ClimberMotorLeaderId = 4;
+        public static int ClimberMotorFollowerId = 5;
+
+        public static double ClimberMotorkP = 2.0;
+        public static double ClimberMotorkV = 0.12;
+
+        public static double ClimberMotorCruiseVelocity = 50;
+        public static double ClimberMotorAcceleration = 50;
+        public static double ClimberMotorUpperLimit = 120;
+        public static double ClimberMotorLowerLimit = 0.5;
+
+    }
 }
