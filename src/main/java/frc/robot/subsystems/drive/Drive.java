@@ -259,6 +259,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
         Pose2d robotPose = getPose();
 
         field2d.getObject("VisionEstimate").setPose(lastVisionPose);
+        Logger.recordOutput("Odometry/VisionEstimate", lastVisionPose);
 
         //field2d.getObject("VisionEstimate").setPose(poseEstimator.getEstimatedPosition()); - commented out by Praneeth
     }
