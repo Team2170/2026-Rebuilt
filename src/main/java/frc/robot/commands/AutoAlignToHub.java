@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.Vision;
 
+//New command for AutoAlign
 public class AutoAlignToHub extends Command {
 
     private final ProfiledPIDController rotPID = new ProfiledPIDController(
