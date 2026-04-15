@@ -166,7 +166,11 @@ public class VisionIOLimelight implements VisionIO {
 
 
 
-        /* -------- Hub Tag Alignment -------- */
+
+        
+
+
+        /* -------- Hub Tag Alignment -------- */           //MAIN LOGIC HERE TO ANGLE BETWEEN TWO APRILTAGS
         boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
         int hubTagIdA = isRed ? 9 : 25;
         int hubTagIdB = isRed ? 10 : 26;
@@ -186,7 +190,7 @@ public class VisionIOLimelight implements VisionIO {
                 sawA = true;
             }
 
-            //If tag matches ID A (10 or 26)
+            //If tag matches ID B (10 or 26)
             if (id == hubTagIdB) {
                 txB = raw[j + 1];
                 distB = raw[j + 5];

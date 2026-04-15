@@ -243,7 +243,7 @@ public class RobotContainer {
 				() -> -driverController.getLeftX()));	
 		
 		
-		// If left bumper pressed on Xbox - autoaligns/angles robot between two April tags
+		// If left bumper pressed on Xbox - autoaligns/angles robot between two April tags   ---- CHANGE IF NECESSARY!!!!
 		if (vision != null) {
 			driverController.leftBumper().whileTrue(new AutoAlignToHub(drive, vision));
 		}

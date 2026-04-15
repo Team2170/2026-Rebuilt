@@ -10,10 +10,10 @@ import frc.robot.subsystems.vision.Vision;
 public class AutoAlignToHub extends Command {
 
     private final ProfiledPIDController rotPID = new ProfiledPIDController(
-        //* THESE VALUES NEED ACTUAL TUNING!!!!!!!!!!!!!!!!! */
+        //* THESE VALUES NEED ACTUAL TUNING!!! */
         0.1,  // kP — tune this first
         0.0,  // kI
-        0.01, // kD — increase if oscillating
+        0.01, // kD — increase if oscillating 
         new TrapezoidProfile.Constraints(
             Math.toRadians(360), // max rotation speed (rad/s)
             Math.toRadians(540)  // max acceleration (rad/s²)
@@ -48,6 +48,7 @@ public class AutoAlignToHub extends Command {
             0.0
         );
 
+        /*Actually turns robot*/
         drive.runVelocity(new ChassisSpeeds(0, 0, -rotOutput));
     }
 
