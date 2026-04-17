@@ -83,13 +83,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                     Math.hypot(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
 
     // PathPlanner config constants
-    private static final double ROBOT_MASS_KG = 39;
+    private static final double ROBOT_MASS_KG = 59.081;
     private static final double ROBOT_MOI = 4.991;
     private static final double WHEEL_COF = 1;
 
-    private Pose2d lastVisionPose = new Pose2d();//Praneeth
-
-
+    private Pose2d lastVisionPose = new Pose2d();
 
     private static final RobotConfig PP_CONFIG = new RobotConfig(
             ROBOT_MASS_KG,
@@ -135,13 +133,12 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
     private Rotation2d rawGyroRotation = new Rotation2d();
-    private final SwerveModulePosition[] lastModulePositions = // For delta tracking
-            new SwerveModulePosition[] {
-                    new SwerveModulePosition(),
-                    new SwerveModulePosition(),
-                    new SwerveModulePosition(),
-                    new SwerveModulePosition()
-            };
+    private final SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[] {
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition()
+    }; // for delta tracking
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
             lastModulePositions, new Pose2d());
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
@@ -175,19 +172,20 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 this::resetOdometry,
                 this::getChassisSpeeds,
                 this::runVelocity,
-                new PPHolonomicDriveController(new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                new PPHolonomicDriveController(new PIDConstants(2.0, 0.0, 0.0), new PIDConstants(10.0, 0.0, 0.0)),
                 PP_CONFIG,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                // () -> false,
                 this);
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback((activePath) -> {
             Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-            field2d.getObject("Trajectory").setPoses(activePath); 
+            field2d.getObject("Trajectory").setPoses(activePath);
         });
 
         PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
             Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-            field2d.getObject("Setpoint").setPose(targetPose); 
+            field2d.getObject("Setpoint").setPose(targetPose);
         });
 
         // Configure SysId
@@ -256,11 +254,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
 
-        Pose2d robotPose = getPose();
+        // Pose2d robotPose = getPose();
 
         field2d.getObject("VisionEstimate").setPose(lastVisionPose);
 
-        //field2d.getObject("VisionEstimate").setPose(poseEstimator.getEstimatedPosition()); - commented out by Praneeth
+        // field2d.getObject("VisionEstimate").setPose(poseEstimator.getEstimatedPosition());
     }
 
     /**

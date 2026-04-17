@@ -21,6 +21,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.Constants;
@@ -87,6 +88,7 @@ public class Robot extends LoggedRobot {
     /** This function is called once when the robot is disabled. */
     @Override
     public void disabledInit() {
+        robotContainer.operatorController.setRumble(RumbleType.kBothRumble, 0);
         robotContainer.resetSimulation();
     }
 
@@ -97,9 +99,7 @@ public class Robot extends LoggedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
-        
         autonomousCommand = robotContainer.getAutonomousCommand();
-        
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {

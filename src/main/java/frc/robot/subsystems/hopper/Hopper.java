@@ -8,7 +8,7 @@ import frc.robot.subsystems.hopper.components.HopperIOInputsAutoLogged;
 
 public class Hopper extends SubsystemBase {
     private final HopperIO io;
-    private final HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
+    public final HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
     private final String SubystemName;
 
     public Hopper(String name, HopperIO io) {
@@ -30,15 +30,23 @@ public class Hopper extends SubsystemBase {
         io.setHopperPower(percent);
     }
 
-     public void setIntakePower(double percent) {
-        io.setIntakePower(percent);
-}
+    public void setIntakeRPS(double rps) {
+        io.setIntakeRPS(rps);
+    }
+
+    public void extendHopper() {
+        io.extendHopper();
+    }
+
+    public void retractHopper() {
+        io.retractHopper();
+    }
 
     public void stopHopper() {
         io.stopHopper();
     }
 
     public void stopIntake() {
-       io.stopIntake();
-     }
+        io.stopIntake();
+    }
 }

@@ -36,12 +36,17 @@ public class Constants {
         public static final int ShooterFeedMotorId = 19;
 
         public static final double FeedMotorRPS = 30;
+        public static final double DefaultShooterRPS = 50;
     }
 
     public static class HopperConstants {
         public static final int MasterHopperMotorID = 14;
         public static final int FollowerHopperMotorID = 13;
         public static final int IntakingMotorID = 12;
+
+        public static final double HopperExtendedPosition = -18.5;
+        public static final double HopperRetractedPosition = -0.5;
+        public static final double HopperIntakingRPS = 60;
     }
 
     public static class VisionConstants {
@@ -67,13 +72,13 @@ public class Constants {
         public static final String leftCameraName = "limelight-left";
 
         // Basic filtering thresholds
-        public static double maxAmbiguity = 0.3;
-        public static double maxZError = 0.75;
+        public static double maxAmbiguity = 99;
+        public static double maxZError = 1;
 
         // Standard deviation baselines, for 1 meter distance and 1 tag
         // (Adjusted automatically based on distance and # of tags)
-        public static double linearStdDevBaseline = 0.5; // Meters
-        public static double angularStdDevBaseline = 9999999; // Radians
+        public static double linearStdDevBaseline = 0.05; // Meters
+        public static double angularStdDevBaseline = 0.01; // Radians
 
         // Standard deviation multipliers for each camera
         // (Adjust to trust some cameras more than others)

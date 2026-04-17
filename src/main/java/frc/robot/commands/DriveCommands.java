@@ -50,7 +50,8 @@ public class DriveCommands {
 	private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
 	public static boolean autoAligned = false;
 
-	private DriveCommands() {}
+	private DriveCommands() {
+	}
 
 	private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
 		// Apply deadband
@@ -91,6 +92,7 @@ public class DriveCommands {
 							omega * drive.getMaxAngularSpeedRadPerSec());
 					boolean isFlipped = DriverStation.getAlliance().isPresent()
 							&& DriverStation.getAlliance().get() == Alliance.Red;
+					// boolean isFlipped = false;
 					drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
 							speeds,
 							isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));
@@ -133,6 +135,7 @@ public class DriveCommands {
 							omega);
 					boolean isFlipped = DriverStation.getAlliance().isPresent()
 							&& DriverStation.getAlliance().get() == Alliance.Red;
+					// boolean isFlipped = false;
 					drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
 							speeds,
 							isFlipped
@@ -148,10 +151,6 @@ public class DriveCommands {
 	/**
 	 * Field relative drive command that rotates to face the nearest detected
 	 * AprilTag.
-	 */
-	/**
-	 * Field relative drive command that rotates to face the nearest detected
-	 * AprilTag across all cameras.
 	 */
 	public static Command joystickAngleToTag(
 			Drive drive,
@@ -172,7 +171,7 @@ public class DriveCommands {
 						autoAligned = true;
 						return drive.getRotation();
 					}
-					return drive.getRotation().plus(tx);
+					return drive.getRotation().minus(tx);
 				});
 	}
 

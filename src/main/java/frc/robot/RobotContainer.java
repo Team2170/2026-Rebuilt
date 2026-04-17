@@ -15,6 +15,7 @@ package frc.robot;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -23,6 +24,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 
@@ -30,6 +32,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,13 +40,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.HopperConstants;
 import frc.robot.constants.Constants.ShooterConstants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.generated.TunerConstants;
@@ -73,13 +76,12 @@ import frc.robot.subsystems.vision.components.VisionIOLimelight;
 public class RobotContainer {
 	private final Vision vision;
 	private final Drive drive;
-	private final Hopper hopper;
+	// private final Hopper hopper;
 	private final Shooter shooter;
 	private SwerveDriveSimulation driveSimulation = null;
 
 	public final CommandXboxController driverController = new CommandXboxController(0);
-
-	private final CommandXboxController operatorController = new CommandXboxController(1);
+	public final CommandXboxController operatorController = new CommandXboxController(1);
 
 	// Dashboard inputs
 	private final LoggedDashboardChooser<Command> autoChooser;
@@ -104,7 +106,7 @@ public class RobotContainer {
 						new VisionIOLimelight(VisionConstants.rightCameraName, drive::getRotation));
 
 				shooter = new Shooter("Shooter", new ShooterIOTalonFX());
-				hopper = new Hopper("Hopper", new HopperIOReal());
+				// hopper = new Hopper("Hopper", new HopperIOReal());
 				break;
 
 			case SIM:
@@ -121,7 +123,7 @@ public class RobotContainer {
 						driveSimulation::setSimulationWorldPose);
 
 				vision = null; // Vision is not supported in simulation yet
-				hopper = null;
+				// hopper = null;
 				shooter = null;
 				break;
 
@@ -143,7 +145,7 @@ public class RobotContainer {
 				vision = new Vision(drive, new VisionIO() {
 				}, new VisionIO() {
 				});
-				hopper = null;
+				// hopper = null;
 				shooter = null;
 				break;
 		}
@@ -166,18 +168,6 @@ public class RobotContainer {
 				drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
 		autoChooser.addOption("Drive SysId (Dynamic Reverse)",
 				drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-		autoChooser.addOption("Shoot To Hub", new ParallelCommandGroup(
-				new InstantCommand(
-						() -> shooter.setShooterVelocityOut(
-								vision.hasAnyTarget()
-										? shooter.calculateRPS(
-												vision.getTagDistance(vision.getBestCameraIndex()),
-												vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
-										: 50),
-						shooter),
-				new WaitCommand(1).andThen(new InstantCommand(
-						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))
-				.andThen(new WaitCommand(5)).andThen(new InstantCommand(() -> shooter.stop())));
 
 		Command shootToHub = new ParallelCommandGroup(
 				new InstantCommand(
@@ -192,6 +182,8 @@ public class RobotContainer {
 						() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))
 				.andThen(new WaitCommand(5)).andThen(new InstantCommand(() -> shooter.stop()));
 
+		autoChooser.addOption("Shoot To Hub", shootToHub);
+
 		try {
 			autoChooser.addOption("Potential Shoot?",
 					AutoBuilder.followPath(PathPlannerPath.fromPathFile("Running Rotation"))
@@ -202,7 +194,25 @@ public class RobotContainer {
 			autoChooser.addOption("To Middle", AutoBuilder.followPath(PathPlannerPath.fromPathFile("To Middle")));
 			autoChooser.addOption("RAHHHHHH", AutoBuilder.followPath(PathPlannerPath.fromPathFile("RAHHHHHH")));
 			autoChooser.addOption("A",
-					AutoBuilder.followPath(PathPlannerPath.fromPathFile("I Guess Bro")).andThen(shootToHub));
+					AutoBuilder.followPath(
+							PathPlannerPath.fromPathFile("I Guess Bro")).andThen(
+									new ParallelCommandGroup(
+											new InstantCommand(
+													() -> shooter.setShooterVelocityOut(
+															vision.hasAnyTarget()
+																	? shooter.calculateRPS(
+																			vision.getTagDistance(
+																					vision.getBestCameraIndex()),
+																			vision.getTargetY(
+																					vision.getBestCameraIndex())
+																					.getDegrees())
+																	: 43),
+													shooter),
+											new WaitCommand(1).andThen(new InstantCommand(
+													() -> shooter
+															.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))))
+											.andThen(new WaitCommand(5))
+											.andThen(new InstantCommand(() -> shooter.stop()))));
 		} catch (FileVersionException | IOException | ParseException e) {
 			DriverStation.reportError("Failed to load auto paths", e.getStackTrace());
 			e.printStackTrace();
@@ -250,7 +260,8 @@ public class RobotContainer {
 						new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 		driverController.a().onTrue(Commands.runOnce(resetOdometry).ignoringDisable(true));
 
-		operatorController.a().onTrue(
+		// Auto calculate RPS and shoots
+		operatorController.rightTrigger().onTrue(
 				new ParallelCommandGroup(
 						new InstantCommand(
 								() -> shooter.setShooterVelocityOut(
@@ -258,7 +269,7 @@ public class RobotContainer {
 												? shooter.calculateRPS(
 														vision.getTagDistance(vision.getBestCameraIndex()),
 														vision.getTargetY(vision.getBestCameraIndex()).getDegrees())
-												: 50),
+												: ShooterConstants.DefaultShooterRPS),
 								shooter),
 						new WaitUntilCommand(() -> shooter.atRPS()).andThen(new InstantCommand(
 								() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
@@ -268,35 +279,57 @@ public class RobotContainer {
 
 		// TODO While shooting, retract hopper
 
-		operatorController.y().onTrue(new ParallelCommandGroup(
-				new InstantCommand(() -> shooter.setShooterVelocityOut(50)), new WaitCommand(1).andThen(
-						new InstantCommand(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS)))))
-				.onFalse(new InstantCommand(() -> shooter.stop()));
+		// Shoot set RPS
+		operatorController.x().onTrue(
+				Commands.defer(() -> Commands.parallel(
+						Commands.runOnce(() -> shooter.setShooterVelocityOut(ShooterConstants.DefaultShooterRPS)),
+						new WaitUntilCommand(() -> shooter.atRPS())).andThen(
+								Commands.runOnce(() -> shooter.setFeedMotorVelocityOut(ShooterConstants.FeedMotorRPS))),
+						Set.of(shooter)))
+				.onFalse(Commands.runOnce(() -> shooter.stop()));
 
-		operatorController.rightBumper().onTrue(new InstantCommand(() -> hopper.setIntakePower(-0.5)))
-				.onFalse(new InstantCommand(() -> hopper.stopIntake()));
+		// Intake in
+		// operatorController.leftTrigger()
+		// 		.onTrue(new InstantCommand(() -> hopper.setIntakeRPS(HopperConstants.HopperIntakingRPS)))
+		// 		.onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		operatorController.b().onTrue(new InstantCommand(() -> hopper.setIntakePower(60)))
-				.onFalse(new InstantCommand(() -> hopper.stopIntake()));
+		// Intake out
+		// operatorController.y().onTrue(new InstantCommand(() -> hopper.setIntakeRPS(-HopperConstants.HopperIntakingRPS)))
+		// 		.onFalse(new InstantCommand(() -> hopper.stopIntake()));
 
-		operatorController.leftBumper().onTrue(new InstantCommand(() -> hopper.setIntakePower(-60)))
-				.onFalse(new InstantCommand(() -> hopper.stopIntake()));
+		// Hopper in automatically
+		// operatorController.povUp()
+		// .onTrue(new ParallelCommandGroup(new InstantCommand(() ->
+		// hopper.retractHopper()),
+		// new InstantCommand(() -> hopper.setIntakeRPS(60)))
+		// .andThen(new WaitUntilCommand(() -> hopper.inputs.HopperPosition >=
+		// HopperConstants.HopperRetractedPosition))
+		// .andThen(new InstantCommand(() ->
+		// operatorController.setRumble(RumbleType.kRightRumble, 1)))
+		// .andThen(new WaitCommand(0.5))
+		// .andThen(new InstantCommand(() ->
+		// operatorController.setRumble(RumbleType.kRightRumble, 0))));
 
-		
-		/* 
-		operatorController.povUp()
-				.onTrue(new ParallelCommandGroup(new InstantCommand(() -> hopper.setHopperPower(0.2)),
-						new InstantCommand(() -> hopper.setIntakePower(0.2))))
-				.onFalse(new ParallelCommandGroup(new InstantCommand(() -> hopper.stopHopper()),
-						new InstantCommand(() -> hopper.stopIntake())));
-		*/
-		operatorController.povUp().onTrue(new InstantCommand(() -> hopper.setHopperPower(-0.2)))
-				.onFalse(new InstantCommand(() -> hopper.stopHopper()));
+		// Hopper out automatically
+		// operatorController.povDown().onTrue(new InstantCommand(() ->
+		// hopper.extendHopper())
+		// .andThen(new WaitUntilCommand(() -> hopper.inputs.HopperPosition <=
+		// HopperConstants.HopperExtendedPosition))
+		// .andThen(new InstantCommand(() ->
+		// operatorController.setRumble(RumbleType.kRightRumble, 1)))
+		// .andThen(new WaitCommand(0.5))
+		// .andThen(new InstantCommand(() ->
+		// operatorController.setRumble(RumbleType.kRightRumble, 0))));
 
-		operatorController.povDown().onTrue(new InstantCommand(() -> hopper.setHopperPower(0.2)))
-				.onFalse(new InstantCommand(() -> hopper.stopHopper()));
+		// TODO add manual hopper in & out
 
-			
+		// // Hopper out manual
+		// operatorController.rightBumper().onTrue(new InstantCommand(() -> hopper.setHopperPower(0.2)))
+		// 		.onFalse(new InstantCommand(() -> hopper.setHopperPower(0)));
+
+		// // Hopper in manual
+		// operatorController.leftBumper().onTrue(new InstantCommand(() -> hopper.setHopperPower(-0.2)))
+		// 		.onFalse(new InstantCommand(() -> hopper.setHopperPower(0)));
 	}
 
 	public void periodic() {
@@ -379,6 +412,19 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
+		boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+		// boolean isRed = false; // TODO fix
+		SmartDashboard.putBoolean("Is Red Alliance", isRed);
+
+		Pose2d bluePose = new Pose2d(3.52151212553495, 4.041469329529244, new Rotation2d(0));
+		Pose2d startPose = isRed
+				? new Pose2d(
+						16.5417 - bluePose.getX(),
+						bluePose.getY(),
+						bluePose.getRotation().plus(Rotation2d.fromDegrees(180)))
+				: bluePose;
+
+		drive.resetOdometry(startPose);
 		return autoChooser.get();
 	}
 

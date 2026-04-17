@@ -37,7 +37,6 @@ public interface HopperIO {
     public default void updateInputs(HopperIOInputs inputs) {
     }
 
-    // TODO Power or position better?
     public default void setHopperPower(double percent) {
     }
 
@@ -46,7 +45,13 @@ public interface HopperIO {
      *
      * @param percent The desired power percentage (between -1.0 and 1.0).
      */
-     public default void setIntakePower(double percent) {
+    public default void setIntakeRPS(double rps) {
+    }
+
+    public default void extendHopper() {
+    }
+
+    public default void retractHopper() {
     }
 
     /** Stops the shooter motor. */

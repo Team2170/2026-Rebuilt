@@ -20,8 +20,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 	private TalonFX BackMasterMotor;
 	private TalonFX BackFollowerMotor;
 	private TalonFX FeedMotor;
-	//TODO Add in roller motors and double check gear ratios for feed and roller motors and check PIDs for shooter motors
-	
+	// TODO Add in roller motors and double check gear ratios for feed and roller
+	// motors and check PIDs for shooter motors
+
 	public static final double BACK_GEAR_RATIO = 1;
 	public static final double FRONT_GEAR_RATIO = 3;
 	public double ty = 0;
@@ -70,8 +71,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 		internalConfig.CurrentLimits.withSupplyCurrentLimit(45);
 		internalConfig.CurrentLimits.withSupplyCurrentLimitEnable(true);
 
-        internalConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25;
-		//CHANGE THIS
+		internalConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.25;
+		// CHANGE THIS
 		internalConfig.Slot0.kP = 0.1; // Responds to velocity error
 		internalConfig.Slot0.kI = 0.001; // Integrates accumulated error (Not rlly needed)
 		internalConfig.Slot0.kD = 0.02; // Dampens oscillation on sudden load
@@ -81,7 +82,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
 		BackMasterMotor.getConfigurator().apply(internalConfig);
 		BackFollowerMotor.getConfigurator().apply(internalConfig);
-		
+
 		BackFollowerMotor.setControl(new Follower(BackMasterMotor.getDeviceID(), MotorAlignmentValue.Aligned));
 
 		internalConfig.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
@@ -118,7 +119,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 	}
 
 	public boolean atRPS() {
-		return BackMasterMotor.getVelocity().getValueAsDouble() >= rps - 1 && BackMasterMotor.getVelocity().getValueAsDouble() <= rps + 1;
+		return BackMasterMotor.getVelocity().getValueAsDouble() >= rps - 1
+				&& BackMasterMotor.getVelocity().getValueAsDouble() <= rps + 1;
 	}
 
 	public double calculateRPS(double tagDistance, double ty) {
@@ -138,9 +140,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 	 */
 	public void setShooterVelocityOut(double rps) {
 		motorsOff = false;
+		this.rps = rps;
 
 		BackMasterMotor.setControl(request.withVelocity(rps));
-		// BackFollowerMotor.setControl(request.withVelocity(rps));
 	}
 
 	public void setFeedMotorVelocityOut(double rps) {
